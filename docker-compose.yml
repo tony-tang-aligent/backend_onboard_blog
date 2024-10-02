@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  php-fpm:
+    image: php:8.1-fpm  # Uses PHP-FPM instead of Apache
+    container_name: php-blog
+    volumes:
+      - ./app:/var/www/html   # Mount the app folder from your host machine to the container
+    depends_on:
+      - mysql-db              # Ensures MySQL starts before PHP
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=mydatabase
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=userpassword
+
+  nginx:
+    image: nginx:latest   # Uses the latest Nginx image
+    container_name: nginx-blog
+    volumes:
+      - ./app:/var/www/html   # Mount the app folder for Nginx as well
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Custom Nginx configuration
+    ports:
+      - "8080:80"             # Exposes the service on port 8080
+    depends_on:
+      - php-fpm
+
+  mysql-db:
+    image: mysql:5.7
+    container_name: mysql-blog
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
