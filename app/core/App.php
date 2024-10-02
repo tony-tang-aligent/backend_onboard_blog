@@ -1,39 +1,24 @@
 <?php
 
+// app/core/App.php
 class App {
-    protected $controller = 'HomeController';
-    protected $method = 'index';
-    protected $params = [];
-
     public function __construct() {
-        $url = $this->parseUrl();
+        $controllerName = 'HomeController'; // Default controller
+        $method = 'index'; // Default method
 
-        // Controller
-        if(file_exists('../app/controllers/' . $url[0] . '.php')) {
-            $this->controller = $url[0];
-            unset($url[0]);
-        }
+        // You can add logic to handle dynamic routing here
 
-        require_once '../app/controllers/' . $this->controller . '.php';
-        $this->controller = new $this->controller;
+        // Include the controller
+        require_once('controllers/' . $controllerName . '.php');
 
-        // Method
-        if(isset($url[1])) {
-            if(method_exists($this->controller, $url[1])) {
-                $this->method = $url[1];
-                unset($url[1]);
-            }
-        }
+        // Create the controller instance
+        $controller = new $controllerName();
 
-        // Params
-        $this->params = $url ? array_values($url) : [];
-
-        call_user_func_array([$this->controller, $this->method], $this->params);
-    }
-
-    public function parseUrl() {
-        if(isset($_GET['url'])) {
-            return explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
+        // Call the method
+        if (method_exists($controller, $method)) {
+            $controller->$method();
+        } else {
+            echo "Method not found.";
         }
     }
 }
