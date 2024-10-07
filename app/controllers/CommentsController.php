@@ -30,6 +30,4 @@ class CommentsController {
         exit; // Ensure no further code runs
     }
 
-
-
 }
