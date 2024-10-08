@@ -20,5 +20,6 @@
         </div>
         <button type="submit">Signup</button>
     </form>
+    <p>Already have an account? <a href="/showlogin">Login here</a></p>
 </body>
 </html>

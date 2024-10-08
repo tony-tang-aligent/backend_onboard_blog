@@ -12,6 +12,9 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between">
         <h1>Latest Blog Posts</h1>
+
+<!--        <a href="/signup" class="btn btn-primary me-2">Signup</a>-->
+<!--        <a href="/login" class="btn btn-secondary me-2">Login</a>-->
         <!-- Add Post button (only visible if logged in) -->
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPostModal">Create Post</button>
     </div>

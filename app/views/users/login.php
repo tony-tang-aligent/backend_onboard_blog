@@ -15,6 +15,7 @@
         <input type="password" name="password" required>
     </div>
     <button type="submit">Login</button>
+    <p>Don't have an account? <a href="/showsignup">Sign up here</a></p>
 </form>
 </body>
 </html>

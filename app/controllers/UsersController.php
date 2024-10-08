@@ -1,11 +1,43 @@
 <?php
 
+require_once 'models/UserModel.php';
 class UsersController {
 
     private $userModel;
 
     public function __construct() {
         $this->userModel = new UserModel();
+    }
+
+//    public function tosignup() {
+//        if (headers_sent()) {
+//            // Output has been sent, cannot use header()
+//            echo '<script type="text/javascript">window.location.href="/signup";</script>';
+//            exit;
+//        } else {
+//            header('Location: /signup');
+//            exit;
+//        }
+//    }
+//
+//    public function tologin() {
+//        // Redirect to login page
+//        if (headers_sent()) {
+//            // Output has been sent, cannot use header()
+//            echo '<script type="text/javascript">window.location.href="/login";</script>';
+//            exit;
+//        } else {
+//            header('Location: /login');
+//            exit;
+//        }
+//    }
+
+    public function tosignup() {
+        require_once 'views/users/signup.php';
+    }
+
+    public function tologin() {
+        require_once 'views/users/login.php';
     }
 
     public function signup() {
@@ -27,7 +59,7 @@ class UsersController {
             $this->userModel->register($username, $email, $password);
             echo "Registration successfull";
         } else {
-            require_once 'views/signup.php';
+            require_once 'views/users/signup.php';
         }
     }
 
@@ -56,7 +88,7 @@ class UsersController {
             }
         } else {
             // Show login form
-            require_once 'views/login.php';
+            require_once 'views/users/login.php';
         }
     }
 }
