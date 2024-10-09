@@ -12,9 +12,15 @@ class CommentsController {
     }
 
     public function store($postId) {
-        $name = $_POST['name'] ?? 'Anonymous';
+        $name = trim($_POST['name'] ?? '');
+        // Check if the name is empty
+        if (empty($name)) {
+            $name = 'Anonymous'; // Set default name
+        }
         $message = $_POST['message'];
         $userId = $_SESSION['user_id'];
+
+//        var_dump($name);
         if (strlen($message) > 50) {
             $_SESSION['error'] = "Comment exceeds the maximum character limit.";
             header('Location: /posts/' . $postId);
