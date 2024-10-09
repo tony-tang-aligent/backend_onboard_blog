@@ -9,29 +9,6 @@ class UsersController {
         $this->userModel = new UserModel();
     }
 
-//    public function tosignup() {
-//        if (headers_sent()) {
-//            // Output has been sent, cannot use header()
-//            echo '<script type="text/javascript">window.location.href="/signup";</script>';
-//            exit;
-//        } else {
-//            header('Location: /signup');
-//            exit;
-//        }
-//    }
-//
-//    public function tologin() {
-//        // Redirect to login page
-//        if (headers_sent()) {
-//            // Output has been sent, cannot use header()
-//            echo '<script type="text/javascript">window.location.href="/login";</script>';
-//            exit;
-//        } else {
-//            header('Location: /login');
-//            exit;
-//        }
-//    }
-
     public function tosignup() {
         require_once 'views/users/signup.php';
     }
@@ -57,9 +34,9 @@ class UsersController {
             }
 
             $this->userModel->register($username, $email, $password);
-            echo "Registration successfull";
+            header("Location: /showlogin");
         } else {
-            require_once 'views/users/signup.php';
+            $this->tosignup();
         }
     }
 
@@ -73,22 +50,25 @@ class UsersController {
 
             if ($user && password_verify($password, $user->password)) {
                 // Start a session and store user information
-                session_start();
+//                session_start();
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['username'] = $user->username;
                 $_SESSION['role'] = $user->role;
-
-                // Redirect to the home page or posts page
-                echo '<script type="text/javascript">';
-                echo 'window.location.href="/posts";';
-                echo '</script>';
-                exit;
+                header("Location: /");
             } else {
                 echo "Invalid username or password.";
             }
         } else {
             // Show login form
-            require_once 'views/users/login.php';
+            $this->tologin();
         }
+    }
+
+    public function logout() : void {
+        session_unset();
+        session_destroy();
+
+        header("Location: /showlogin");
+        exit();
     }
 }

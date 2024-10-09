@@ -9,24 +9,34 @@ class PostModel {
         $this->db = new Database();
     }
 
-    // Add a new blog post to the database
-    public function addPost($title, $body, $user_id) {
-        // SQL query to insert a new blog post
-        $this->db->query("INSERT INTO Posts (title, body, created_at) 
-                          VALUES (:title, :body, NOW())");
+    public function addPost($title, $body, $userId) {
+        // Prepare the SQL query to insert a new blog post
+        $sql = "INSERT INTO Posts (title, body, user_id, created_at) 
+                VALUES (:title, :body, :userId, NOW())";
+
+        // Prepare the statement
+        $this->db->query($sql);
 
         // Bind the parameters to prevent SQL injection
         $this->db->bind(':title', $title);
         $this->db->bind(':body', $body);
-        //$this->db->bind(':user_id', 1);
+        $this->db->bind(':userId', $userId);
 
-        // Execute the query and return the result
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        // Execute the query
+        return $this->db->execute();
     }
+
+    public function updatePost($id, $title, $body) {
+        $sql = "UPDATE Posts SET title = :title, body = :body, updated_at = NOW() WHERE id = :id AND user_id = :userId";
+        $this->db->query($sql);
+        $this->db->bind(':title', $title);
+        $this->db->bind(':body', $body);
+        $this->db->bind(':id', $id);
+        $this->db->bind(':userId', $_SESSION['user_id']);
+
+        return $this->db->execute();
+    }
+
 
     // Retrieve all blog posts from the database
     public function getPosts() {
@@ -53,7 +63,5 @@ class PostModel {
         $this->db->bind(':id', $postId);
         $this->db->execute();
     }
-
-
 }
 

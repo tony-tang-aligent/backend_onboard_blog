@@ -1,5 +1,7 @@
 <?php
 //require_once 'views/home.php';
+use JetBrains\PhpStorm\NoReturn;
+
 require_once 'models/PostModel.php';
 class PostsController {
     private $postModel;
@@ -12,19 +14,18 @@ class PostsController {
         require_once 'views/home.php';
     }
 
-    public function create() {
+    public function create() :void {
         $title = $_POST['title'];
         $body = $_POST['body'];
-        $this->postModel->addPost($title, $body, 1);
+        $userId = $_SESSION['user_id']; // Make sure the user is logged in
 
-//        header('Location: /');
-//        exit;  // Ensure the script stops executing after the redirect
-
-        // JavaScript-based redirection after post creation
-        echo '<script type="text/javascript">';
-        echo 'window.location.href="/";';
-        echo '</script>';
-        exit; // Ensure no further code runs
+        // Add the post to the database
+        if ($this->postModel->addPost($title, $body, $userId)) {
+            header('Location: /');
+            exit; // Ensure no further code runs
+        } else {
+            echo "Failed to create post.";
+        }
     }
 
     public function show($id) {
@@ -42,6 +43,29 @@ class PostsController {
         require_once 'views/posts/show.php';
     }
 
+    public function edit($id) {
+        $post = $this->postModel->getPostByID($id);
 
+        // Ensure the post exists and that the current user is the owner of the post
+        if (!$post || $post->user_id != $_SESSION['user_id']) {
+            header('Location: /');
+            exit;
+        }
 
+        require_once 'views/posts/edit.php';
+    }
+
+    // Handle the update request after form submission
+    public function update($id) {
+        $title = $_POST['title'];
+        $body = $_POST['body'];
+
+        // Update the post in the database
+        if ($this->postModel->updatePost($id, $title, $body)) {
+            header('Location: /posts/' . $id);
+            exit;
+        } else {
+            echo "Failed to update post.";
+        }
+    }
 }

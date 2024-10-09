@@ -45,6 +45,9 @@
         </div>
         <button type="submit" class="btn btn-primary">Post Comment</button>
     </form>
+
+    <a href="/" class="btn btn-secondary mt-4">Back to Home</a>
+    <a href="/logout" class="btn btn-danger">Logout</a>
 </div>
 
 <!-- Bootstrap JS -->
