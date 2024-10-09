@@ -63,5 +63,26 @@ class PostModel {
         $this->db->bind(':id', $postId);
         $this->db->execute();
     }
+
+    public function decrementCommentCount($postId) {
+        $sql = "UPDATE Posts SET comment_count = comment_count - 1 WHERE id = :id";
+        $this->db->query($sql);
+        $this->db->bind(':id', $postId);
+
+        return $this->db->execute();
+    }
+
+
+    public function deletePost($id) {
+        $sql = "DELETE FROM Posts WHERE id = :id AND user_id = :userId";
+        $this->db->query($sql);
+        $this->db->bind(':id', $id);
+        $this->db->bind(':userId', $_SESSION['user_id']);
+
+        return $this->db->execute();
+    }
+
+
+
 }
 

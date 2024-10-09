@@ -24,8 +24,18 @@
                     <strong><?= htmlspecialchars(isset($comment->name) ? $comment->name : 'Anonymous'); ?></strong>
                     <span class="text-muted">on <?= htmlspecialchars($comment->created_at); ?></span>
                     <p><?= htmlspecialchars($comment->message); ?></p>
+
+                    <!-- Display Edit and Delete buttons only if the logged-in user owns the comment -->
+                    <?php if ($_SESSION['user_id'] === $comment->user_id): ?>
+                        <a href="/comments/<?= $comment->id; ?>/edit/<?= $post->id; ?>" class="btn btn-warning btn-sm">Edit</a>
+                        </form>
+                        <form action="/comments/<?= $comment->id; ?>/delete/<?= $post->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
+
         <?php else: ?>
             <li class="list-group-item">No comments yet.</li>
         <?php endif; ?>

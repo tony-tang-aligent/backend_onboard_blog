@@ -68,4 +68,24 @@ class PostsController {
             echo "Failed to update post.";
         }
     }
+
+    public function delete($id) {
+        $post = $this->postModel->getPostByID($id);
+
+        // Ensure the post exists and that the current user is the owner
+        if (!$post || $post->user_id != $_SESSION['user_id']) {
+            header('Location: /');
+            exit;
+        }
+
+        // Delete the post
+        if ($this->postModel->deletePost($id)) {
+            header('Location: /');
+            exit;
+        } else {
+            echo "Failed to delete post.";
+        }
+    }
+
+
 }

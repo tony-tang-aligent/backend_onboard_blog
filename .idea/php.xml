@@ -18,6 +18,12 @@
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter id="799b89ab-c9d8-434a-b9db-6eb11dafbbcc" name="php:8.1-fpm" home="docker://DATA" auto="false" debugger_id="php.debugger.XDebug">
+        <configuration_options>
+          <configuration_option name="xdebug.mode" value="debug" />
+          <configuration_option name="xdebug.client_host" value="127.0.0.1" />
+          <configuration_option name="xdebug.client_port" value="9003" />
+          <configuration_option name="xdebug.start_upon_error" value="" />
+        </configuration_options>
         <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_IMAGE_NAME="php:8.1-fpm" DOCKER_REMOTE_PROJECT_PATH="/opt/project" />
       </interpreter>
     </interpreters>
