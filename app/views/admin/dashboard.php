@@ -14,6 +14,7 @@
         <span class="me-3">Logged in as: <strong><?= htmlspecialchars($_SESSION['username']); ?></strong> (<?= htmlspecialchars($_SESSION['role']); ?>)</span>
         <a href="/logout" class="btn btn-danger me-2">Logout</a>
         <a href="/admin/users" class="btn btn-danger me-2">User Management</a>
+        <a href="/admin/comments" class="btn btn-danger me-2">Comments Management</a>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPostModal">Create Post</button>
 
     </div>

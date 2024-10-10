@@ -21,7 +21,7 @@ class AdminController {
 
     public function show($id) {
         $post = $this->postModel->getPostByID($id);
-        $comments = $this->postModel->getCommentByID($id);
+        $comments = $this->commentModel->getApprovedComments($id);
         if ($post == null) {
             $post = [];
         }
@@ -94,5 +94,22 @@ class AdminController {
     {
         $this->userModel->deleteUserByID($id);
         header("Location: /admin/users");
+    }
+
+    public function showComment() {
+        $comments = $this->commentModel->getAllComments();
+        require_once 'views/admin/approve_comments.php';
+    }
+
+    public function approve($commentId)
+    {
+        $this->commentModel->approveCommentStatus($commentId);
+        header("Location: /admin/comments");
+    }
+
+    public function reject($commentId)
+    {
+        $this->commentModel->rejectCommentStatus($commentId);
+        header("Location: /admin/comments");
     }
 }

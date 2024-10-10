@@ -51,12 +51,12 @@ class PostModel {
         return $this->db->single();
     }
 
-    public function getCommentByID($id)
-    {
-        $this->db->query("SELECT * FROM Comments WHERE post_id = :id");
-        $this->db->bind(':id', $id);
-        return $this->db->resultSet();
-    }
+//    public function getCommentByID($id)
+//    {
+//        $this->db->query("SELECT * FROM Comments WHERE post_id = :id");
+//        $this->db->bind(':id', $id);
+//        return $this->db->resultSet();
+//    }
 
     public function incrementCommentCount($postId) {
         $this->db->query("UPDATE Posts Set comment_count = comment_count + 1 WHERE id= :id");

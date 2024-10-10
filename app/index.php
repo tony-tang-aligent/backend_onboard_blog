@@ -41,7 +41,9 @@ $router->add('POST','/admin/users/create', [new AdminController(), 'create']);
 $router->add('GET', '/admin/users/{id}/edit', [new AdminController(), 'edit']);
 $router->add('POST', '/admin/users/{id}/update', [new AdminController(), 'update']);
 $router->add('POST', '/admin/users/{id}/delete', [new AdminController(), 'delete']);
-
+$router->add('GET', '/admin/comments', [new AdminController(), 'showComment']);
+$router->add('GET', '/admin/comments/{id}/approve', [new AdminController(), 'approve']);
+$router->add('GET', '/admin/comments/{id}/reject', [new AdminController(), 'reject']);
 
 // Only allow post creation if user is logged in
 $router->add('POST', '/posts/create', function() {

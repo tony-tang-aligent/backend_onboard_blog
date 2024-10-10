@@ -3,11 +3,13 @@
 use JetBrains\PhpStorm\NoReturn;
 
 require_once 'models/PostModel.php';
+require_once 'models/CommentModel.php';
 class PostsController {
     private $postModel;
-
+    private $commentModel;
     public function __construct() {
         $this->postModel = new PostModel(); // Initialize the PostModel instance
+        $this->commentModel = new CommentModel();
     }
     public function index() {
         $posts = $this->postModel->getPosts();
@@ -32,8 +34,7 @@ class PostsController {
 
     public function show($id) {
         $post = $this->postModel->getPostByID($id);
-        $comments = $this->postModel->getCommentByID($id);
-        $role = $_SESSION['role'];
+        $comments = $this->commentModel->getApprovedComments($id);
         if ($post == null) {
             $post = [];
         }
@@ -43,7 +44,7 @@ class PostsController {
 //        var_dump($id);
 //        var_dump($post);
 //        var_dump($comment);
-        if ($role === 'admin') {
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             require_once 'views/admin/posts/admin_show.php';
         }
         require_once 'views/posts/show.php';
