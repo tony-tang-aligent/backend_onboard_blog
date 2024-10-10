@@ -54,8 +54,14 @@ class UsersController {
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['username'] = $user->username;
                 $_SESSION['role'] = $user->role;
+                if ($user->role === 'admin') {
+                    header("Location: /admin");
+                    exit;
+                }
                 header("Location: /");
+                exit;
             } else {
+                //var_dump($user);
                 echo "Invalid username or password.";
             }
         } else {

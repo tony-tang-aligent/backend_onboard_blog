@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($post->title); ?></title>
+    <title><?= htmlspecialchars($post->title); ?> - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -25,14 +25,11 @@
                     <span class="text-muted">on <?= htmlspecialchars($comment->created_at); ?></span>
                     <p><?= htmlspecialchars($comment->message); ?></p>
 
-                    <!-- Display Edit and Delete buttons only if the logged-in user owns the comment -->
-                    <?php if ($_SESSION['user_id'] === $comment->user_id) : ?>
-                        <a href="/comments/<?= $comment->id; ?>/edit/<?= $post->id; ?>" class="btn btn-warning btn-sm">Edit</a>
-                        </form>
-                        <form action="/comments/<?= $comment->id; ?>/delete/<?= $post->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    <?php endif; ?>
+                    <!-- Admin can edit and delete any comment -->
+                    <a href="/comments/<?= $comment->id; ?>/edit/<?= $post->id; ?>" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="/comments/<?= $comment->id; ?>/delete/<?= $post->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
                 </li>
             <?php endforeach; ?>
 
@@ -56,7 +53,7 @@
         <button type="submit" class="btn btn-primary">Post Comment</button>
     </form>
 
-    <a href="/" class="btn btn-secondary mt-4">Back to Home</a>
+    <a href="/admin" class="btn btn-secondary mt-4">Back to Dashboard</a>
     <a href="/logout" class="btn btn-danger">Logout</a>
 </div>
 

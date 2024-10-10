@@ -7,6 +7,7 @@ require_once 'core/Router.php';
 require_once 'controllers/PostsController.php';
 require_once 'controllers/CommentsController.php';
 require_once 'controllers/UsersController.php';
+require_once 'controllers/AdminController.php';
 
 $router = new Router();
 
@@ -31,6 +32,15 @@ $router->add('POST', '/comments/{commentId}/posts/{postId}/update', [new Comment
 $router->add('GET', '/comments/{id}', [new CommentsController(), 'show']);
 $router->add('POST', '/comments/{commentId}/delete/{postId}', [new CommentsController(), 'delete']);
 $router->add('GET', '/comments/{commentId}/edit/{postId}', [new CommentsController(), 'edit']);
+
+//Admin routing
+$router->add('GET', '/admin', [new AdminController(), 'index']);
+$router->add('GET', '/admin/posts/{id}', [new AdminController(), 'show']);
+$router->add('GET', '/admin/users', [new AdminController(), 'users']);
+$router->add('POST','/admin/users/create', [new AdminController(), 'create']);
+$router->add('GET', '/admin/users/{id}/edit', [new AdminController(), 'edit']);
+$router->add('POST', '/admin/users/{id}/update', [new AdminController(), 'update']);
+$router->add('POST', '/admin/users/{id}/delete', [new AdminController(), 'delete']);
 
 
 // Only allow post creation if user is logged in

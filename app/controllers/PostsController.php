@@ -18,19 +18,22 @@ class PostsController {
         $title = $_POST['title'];
         $body = $_POST['body'];
         $userId = $_SESSION['user_id']; // Make sure the user is logged in
-
+        $role = $_SESSION['role'];
         // Add the post to the database
-        if ($this->postModel->addPost($title, $body, $userId)) {
+        if ($role === 'admin') {
+            $this->postModel->addPost($title, $body, $userId);
+            header("Location: /admin");
+        } else {
+            $this->postModel->addPost($title, $body, $userId);
             header('Location: /');
             exit; // Ensure no further code runs
-        } else {
-            echo "Failed to create post.";
         }
     }
 
     public function show($id) {
         $post = $this->postModel->getPostByID($id);
         $comments = $this->postModel->getCommentByID($id);
+        $role = $_SESSION['role'];
         if ($post == null) {
             $post = [];
         }
@@ -40,14 +43,21 @@ class PostsController {
 //        var_dump($id);
 //        var_dump($post);
 //        var_dump($comment);
+        if ($role === 'admin') {
+            require_once 'views/admin/posts/admin_show.php';
+        }
         require_once 'views/posts/show.php';
     }
 
     public function edit($id) {
         $post = $this->postModel->getPostByID($id);
-
+        $role = $_SESSION['role'];
         // Ensure the post exists and that the current user is the owner of the post
-        if (!$post || $post->user_id != $_SESSION['user_id']) {
+        if (!$post ) {
+            if ($role === 'admin') {
+                header('Location: /admin');
+                exit;
+            }
             header('Location: /');
             exit;
         }
@@ -56,13 +66,18 @@ class PostsController {
     }
 
     // Handle the update request after form submission
-    public function update($id) {
+    public function update($postId) {
         $title = $_POST['title'];
         $body = $_POST['body'];
-
+        $role = $_SESSION['role'];
         // Update the post in the database
-        if ($this->postModel->updatePost($id, $title, $body)) {
-            header('Location: /posts/' . $id);
+
+        if ($this->postModel->updatePost($postId, $title, $body)) {
+            if ($role === 'admin') {
+                header('Location: /admin/posts/' . $postId);
+                exit;
+            }
+            header('Location: /posts/' . $postId);
             exit;
         } else {
             echo "Failed to update post.";
@@ -71,15 +86,19 @@ class PostsController {
 
     public function delete($id) {
         $post = $this->postModel->getPostByID($id);
-
+        $role = $_SESSION['role'];
         // Ensure the post exists and that the current user is the owner
-        if (!$post || $post->user_id != $_SESSION['user_id']) {
+        if (!$post) {
             header('Location: /');
             exit;
         }
 
         // Delete the post
         if ($this->postModel->deletePost($id)) {
+            if ($role === 'admin') {
+                header('Location: /admin');
+                exit;
+            }
             header('Location: /');
             exit;
         } else {

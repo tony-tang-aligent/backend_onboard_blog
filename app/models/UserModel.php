@@ -27,5 +27,39 @@ class UserModel extends Database
         $this->bind(':email', $email);
         return $this->single();
     }
+
+    public function findAllUsers() {
+        $this->query("SELECT * FROM Users");
+        return $this->resultSet();
+    }
+
+    public function updateUser($id, $username, $email, $hashedPassword, $role) {
+        $query = "UPDATE Users SET username = :username, email = :email, password = :password, role = :role WHERE id = :id";
+        $this->query($query);
+        $this->bind(':username', $username);
+        $this->bind(':email', $email);
+        $this->bind(':password', $hashedPassword);
+        $this->bind(':role', $role);
+        $this->bind(':id', $id);
+
+        return $this->execute();
+    }
+
+
+    public function findUserByID($id)
+    {
+        $query = "SELECT * FROM Users WHERE id = :id";
+        $this->query($query);
+        $this->bind(':id', $id);
+
+        return $this->single();
+    }
+
+    public function deleteUserByID($id)
+    {
+        $this->query("DELETE FROM Users WHERE id = :id");
+        $this->bind(':id', $id);
+        return $this->execute();
+    }
 }
 

@@ -19,10 +19,14 @@ class CommentsController {
         }
         $message = $_POST['message'];
         $userId = $_SESSION['user_id'];
-
+        $role = $_SESSION['role'];
 //        var_dump($name);
         if (strlen($message) > 50) {
             $_SESSION['error'] = "Comment exceeds the maximum character limit.";
+            if ($role === 'admin') {
+                header('Location: /admin/posts/' . $postId);
+                exit;
+            }
             header('Location: /posts/' . $postId);
             exit;
         }
@@ -30,18 +34,25 @@ class CommentsController {
         $this->commentModel->addComment($postId, $name, $message, $userId);
         $this->postModel->incrementCommentCount($postId);
 
-        // Redirect to the specific post page
-        echo '<script type="text/javascript">';
-        echo 'window.location.href="/posts/' . $postId . '";';
-        echo '</script>';
-        exit; // Ensure no further code runs
+        if ($role === 'admin') {
+            header('Location: /admin/posts/' . $postId);
+            exit;
+        }
+        header('Location: /posts/' . $postId);
+        exit;
+//        // Redirect to the specific post page
+//        echo '<script type="text/javascript">';
+//        echo 'window.location.href="/posts/' . $postId . '";';
+//        echo '</script>';
+//        exit; // Ensure no further code runs
     }
 
     public function delete($commentId, $postId) {
         $comment = $this->commentModel->getCommentByID($commentId);
         //var_dump($comment);
+        $role = $_SESSION['role'];
         // Ensure the comment exists and belongs to the user (if user-based ownership)
-        if (!$comment || $comment->user_id != $_SESSION['user_id']) {
+        if (!$comment) {
             header('Location: /posts/' . $postId);
             exit;
         }
@@ -50,6 +61,11 @@ class CommentsController {
         if ($this->commentModel->deleteComment($commentId)) {
             // Decrement comment count in the post
             $this->postModel->decrementCommentCount($postId);
+
+            if ($role === 'admin') {
+                header('Location: /admin/posts/' . $postId);
+                exit;
+            }
             header('Location: /posts/' . $postId);
             exit;
         } else {
@@ -61,9 +77,14 @@ class CommentsController {
     public function edit($commentId, $postId) {
         $comment = $this->commentModel->getCommentByID($commentId);
 
+        $role = $_SESSION['role'];
         // Ensure the post exists and that the current user is the owner of the post
-        if (!$comment || $comment->user_id != $_SESSION['user_id']) {
-            header('Location: /');
+        if (!$comment) {
+            if ($role === 'admin') {
+                header('Location: /admin/posts/' . $postId);
+                exit;
+            }
+            header('Location: /posts/' . $postId);
             exit;
         }
         require_once 'views/posts/commentedit.php';
@@ -72,7 +93,7 @@ class CommentsController {
     public function update($commentId, $postId) {
         $name = $_POST['name'] ?? 'Anonymous';
         $message = $_POST['message'];
-
+        $role = $_SESSION['role'];
         // Ensure the message does not exceed the character limit
         if (strlen($message) > 50) {
             $_SESSION['error'] = "Comment exceeds the maximum character limit.";
@@ -85,7 +106,11 @@ class CommentsController {
 
         // Redirect back to the post page
         //var_dump($postId);
-        header("Location: /posts/$postId");
+        if ($role === 'admin') {
+            header('Location: /admin/posts/' . $postId);
+            exit;
+        }
+        header('Location: /posts/' . $postId);
         exit;
     }
 

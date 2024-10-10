@@ -10,7 +10,11 @@ class HomeController extends Controller {
 
     public function index() {
         $posts = $this->postModel ->getPosts();
-
+        $role = $_SESSION['role'];
+        if ($role === 'admin') {
+            require_once 'views/admin/dashboard.php';
+            return;
+        }
         require_once 'views/home.php';
 //        require_once 'views/users/login.php';
     }

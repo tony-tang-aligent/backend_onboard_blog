@@ -12,16 +12,20 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between">
         <h1>Latest Blog Posts</h1>
-        <a href="/logout" class="btn btn-danger me-2">Logout</a>
-<!--        <a href="/signup" class="btn btn-primary me-2">Signup</a>-->
-<!--        <a href="/login" class="btn btn-secondary me-2">Login</a>-->
-        <!-- Add Post button (only visible if logged in) -->
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPostModal">Create Post</button>
+        <!-- Display the Logout button if the user is logged in -->
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <span class="me-3">Logged in as: <strong><?= htmlspecialchars($_SESSION['username']); ?></strong> (<?= htmlspecialchars($_SESSION['role']); ?>)</span>
+            <a href="/logout" class="btn btn-danger me-2">Logout</a>
+        <?php else: ?>
+            <!-- If no user is logged in, you can display login/signup buttons (optional) -->
+            <a href="/showlogin" class="btn btn-secondary me-2">Login</a>
+            <a href="/showsignup" class="btn btn-primary me-2">Signup</a>
+        <?php endif; ?>
 
-<!--        --><?php
-//        var_dump($_SESSION);
-//        echo "fwqfqwf";
-//        ?>
+        <!-- Add Post button (only visible if logged in) -->
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPostModal">Create Post</button>
+        <?php endif; ?>
     </div>
 
     <div class="row mt-4">
@@ -40,7 +44,7 @@
                             <span class="badge bg-secondary float-end"><?= htmlspecialchars($post->comment_count); ?> Comments</span>
 
                             <!-- Display Edit and Delete buttons only if the logged-in user owns the post -->
-                            <?php if ($_SESSION['user_id'] === $post->user_id): ?>
+                            <?php if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] === $post->user_id)): ?>
                                 <a href="/posts/<?= $post->id; ?>/edit" class="btn btn-warning mt-2">Edit</a>
                                 <form action="/posts/<?= $post->id; ?>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post?');">
                                     <button type="submit" class="btn btn-danger mt-2">Delete</button>

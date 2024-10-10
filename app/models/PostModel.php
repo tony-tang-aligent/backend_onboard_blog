@@ -27,12 +27,12 @@ class PostModel {
     }
 
     public function updatePost($id, $title, $body) {
-        $sql = "UPDATE Posts SET title = :title, body = :body, updated_at = NOW() WHERE id = :id AND user_id = :userId";
+        $sql = "UPDATE Posts SET title = :title, body = :body, updated_at = NOW() WHERE id = :id";
         $this->db->query($sql);
         $this->db->bind(':title', $title);
         $this->db->bind(':body', $body);
         $this->db->bind(':id', $id);
-        $this->db->bind(':userId', $_SESSION['user_id']);
+        //$this->db->bind(':userId', $_SESSION['user_id']);
 
         return $this->db->execute();
     }
@@ -74,10 +74,10 @@ class PostModel {
 
 
     public function deletePost($id) {
-        $sql = "DELETE FROM Posts WHERE id = :id AND user_id = :userId";
+        $sql = "DELETE FROM Posts WHERE id = :id";
         $this->db->query($sql);
         $this->db->bind(':id', $id);
-        $this->db->bind(':userId', $_SESSION['user_id']);
+        //$this->db->bind(':userId', $_SESSION['user_id']);
 
         return $this->db->execute();
     }
