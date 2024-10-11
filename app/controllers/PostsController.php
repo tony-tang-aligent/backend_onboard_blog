@@ -1,17 +1,21 @@
 <?php
 //require_once 'views/home.php';
+namespace app\controllers;
+use app\models\CommentModel;
+use app\models\PostModel;
 use JetBrains\PhpStorm\NoReturn;
 
-require_once 'models/PostModel.php';
-require_once 'models/CommentModel.php';
+//require_once 'models/PostModel.php';
+//require_once 'models/CommentModel.php';
 class PostsController {
-    private $postModel;
-    private $commentModel;
+    private PostModel $postModel;
+    private CommentModel $commentModel;
     public function __construct() {
         $this->postModel = new PostModel(); // Initialize the PostModel instance
         $this->commentModel = new CommentModel();
     }
-    public function index() {
+    public function index(): void
+    {
         $posts = $this->postModel->getPosts();
         require_once 'views/home.php';
     }
@@ -22,17 +26,17 @@ class PostsController {
         $userId = $_SESSION['user_id']; // Make sure the user is logged in
         $role = $_SESSION['role'];
         // Add the post to the database
+        $this->postModel->addPost($title, $body, $userId);
         if ($role === 'admin') {
-            $this->postModel->addPost($title, $body, $userId);
             header("Location: /admin");
         } else {
-            $this->postModel->addPost($title, $body, $userId);
             header('Location: /');
             exit; // Ensure no further code runs
         }
     }
 
-    public function show($id) {
+    public function show($id): void
+    {
         $post = $this->postModel->getPostByID($id);
         $comments = $this->commentModel->getApprovedComments($id);
         if ($post == null) {
@@ -50,7 +54,8 @@ class PostsController {
         require_once 'views/posts/show.php';
     }
 
-    public function edit($id) {
+    public function edit($id): void
+    {
         $post = $this->postModel->getPostByID($id);
         $role = $_SESSION['role'];
         // Ensure the post exists and that the current user is the owner of the post
@@ -67,7 +72,8 @@ class PostsController {
     }
 
     // Handle the update request after form submission
-    public function update($postId) {
+    public function update($postId): void
+    {
         $title = $_POST['title'];
         $body = $_POST['body'];
         $role = $_SESSION['role'];
@@ -85,7 +91,8 @@ class PostsController {
         }
     }
 
-    public function delete($id) {
+    public function delete($id): void
+    {
         $post = $this->postModel->getPostByID($id);
         $role = $_SESSION['role'];
         // Ensure the post exists and that the current user is the owner

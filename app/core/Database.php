@@ -1,4 +1,7 @@
 <?php
+namespace app\core;
+use PDO;
+use PDOException;
 
 class Database {
     private $host = 'mysql-blog';
@@ -29,26 +32,21 @@ class Database {
     }
 
     // Prepare the SQL query
-    public function query($sql) {
+    public function query($sql): void
+    {
         $this->stmt = $this->dbh->prepare($sql);
     }
 
     // Bind the parameters
-    public function bind($param, $value, $type = null) {
+    public function bind($param, $value, $type = null): void
+    {
         if (is_null($type)) {
-            switch (true) {
-                case is_int($value):
-                    $type = PDO::PARAM_INT;
-                    break;
-                case is_bool($value):
-                    $type = PDO::PARAM_BOOL;
-                    break;
-                case is_null($value):
-                    $type = PDO::PARAM_NULL;
-                    break;
-                default:
-                    $type = PDO::PARAM_STR;
-            }
+            $type = match (true) {
+                is_int($value) => PDO::PARAM_INT,
+                is_bool($value) => PDO::PARAM_BOOL,
+                is_null($value) => PDO::PARAM_NULL,
+                default => PDO::PARAM_STR,
+            };
         }
         $this->stmt->bindValue($param, $value, $type);
     }

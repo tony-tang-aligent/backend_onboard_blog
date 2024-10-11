@@ -1,7 +1,10 @@
 <?php
-require_once 'core/Database.php';
+namespace app\models;
+//require_once 'core/Database.php';
+use app\core\Database;
+
 class CommentModel {
-    private $db;
+    private Database $db;
 
     public function __construct() {
         $this->db = new Database();

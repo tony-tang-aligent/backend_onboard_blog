@@ -1,6 +1,9 @@
-// app/core/db.php
+
 <?php
 
+namespace app\core;
+
+use PDO;
 
 $host = 'mysql-blog'; // This should match the service name in your docker-compose.yml
 $db   = 'mydatabase'; // Database name
@@ -20,4 +23,4 @@ try {
 } catch (\PDOException $e) {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
-?>
+

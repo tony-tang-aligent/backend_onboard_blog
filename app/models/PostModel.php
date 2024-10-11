@@ -1,6 +1,7 @@
 <?php
-
-require_once 'core/Database.php';
+namespace app\models;
+use app\core\Database;
+//require_once 'core/Database.php';
 class PostModel {
     private $db;
 

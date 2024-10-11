@@ -1,23 +1,28 @@
 <?php
+namespace app\controllers;
+//require_once 'models/UserModel.php';
+use app\models\UserModel;
 
-require_once 'models/UserModel.php';
 class UsersController {
 
-    private $userModel;
+    private UserModel $userModel;
 
     public function __construct() {
         $this->userModel = new UserModel();
     }
 
-    public function tosignup() {
+    public function tosignup(): void
+    {
         require_once 'views/users/signup.php';
     }
 
-    public function tologin() {
+    public function tologin(): void
+    {
         require_once 'views/users/login.php';
     }
 
-    public function signup() {
+    public function signup(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'];
             $email = $_POST['email'];
@@ -40,7 +45,8 @@ class UsersController {
         }
     }
 
-    public function login() {
+    public function login(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'];
             $password = $_POST['password'];

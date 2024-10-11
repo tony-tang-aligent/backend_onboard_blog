@@ -1,5 +1,5 @@
 <?php
-
+namespace app\core;
 // app/core/App.php
 class App {
     public function __construct() {

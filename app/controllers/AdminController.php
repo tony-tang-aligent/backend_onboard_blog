@@ -1,12 +1,17 @@
 <?php
-require_once 'models/PostModel.php';
-require_once 'models/CommentModel.php';
-require_once 'models/UserModel.php';
+//require_once 'models/PostModel.php';
+//require_once 'models/CommentModel.php';
+//require_once 'models/UserModel.php';
+namespace app\controllers;
+use app\models\CommentModel;
+use app\models\PostModel;
+use app\models\UserModel;
+
 class AdminController {
 
-    private $postModel;
-    private $commentModel;
-    private $userModel;
+    private PostModel $postModel;
+    private CommentModel $commentModel;
+    private UserModel $userModel;
 
     public function __construct() {
         $this->postModel = new PostModel();
@@ -14,12 +19,14 @@ class AdminController {
         $this->userModel = new UserModel();
     }
 
-    public function index() {
+    public function index(): void
+    {
         $posts = $this->postModel ->getPosts();
         require_once 'views/admin/dashboard.php';
     }
 
-    public function show($id) {
+    public function show($id): void
+    {
         $post = $this->postModel->getPostByID($id);
         $comments = $this->commentModel->getApprovedComments($id);
         if ($post == null) {
@@ -34,12 +41,14 @@ class AdminController {
         require_once 'views/admin/admin_show.php';
     }
 
-    public function users() {
+    public function users(): void
+    {
         $users = $this->userModel->findAllUsers();
         require_once 'views/admin/usermanagement.php';
     }
 
-    public function create() {
+    public function create(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'];
             $email = $_POST['email'];
@@ -62,12 +71,13 @@ class AdminController {
         }
     }
 
-    public function edit($id) {
+    public function edit($id): void
+    {
         $user = $this->userModel->findUserByID($id);
         require_once 'views/admin/admin_user_edit.php';
     }
 
-    public function update($id)
+    public function update($id): void
     {
         $user = $this->userModel->findUserByID($id);
         $username = $_POST['username'];
@@ -90,24 +100,25 @@ class AdminController {
         header("Location: /admin/users");
     }
 
-    public function delete($id)
+    public function delete($id): void
     {
         $this->userModel->deleteUserByID($id);
         header("Location: /admin/users");
     }
 
-    public function showComment() {
+    public function showComment(): void
+    {
         $comments = $this->commentModel->getAllComments();
         require_once 'views/admin/approve_comments.php';
     }
 
-    public function approve($commentId)
+    public function approve($commentId): void
     {
         $this->commentModel->approveCommentStatus($commentId);
         header("Location: /admin/comments");
     }
 
-    public function reject($commentId)
+    public function reject($commentId): void
     {
         $this->commentModel->rejectCommentStatus($commentId);
         header("Location: /admin/comments");

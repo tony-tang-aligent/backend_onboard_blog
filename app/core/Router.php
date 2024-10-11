@@ -1,9 +1,11 @@
 <?php
+namespace app\core;
 
 class Router {
-    private $routes = [];
+    private array $routes = [];
 
-    public function add($method, $path, $action) {
+    public function add($method, $path, $action): void
+    {
         // Convert path with parameters into a regular expression
         $pattern = preg_replace('/{(\w+)}/', '(\d+)', $path);
         $this->routes[] = [
@@ -27,3 +29,4 @@ class Router {
         exit;
     }
 }
+?>

@@ -1,10 +1,15 @@
 <?php
 
-require_once 'models/CommentModel.php';
-require_once 'models/PostModel.php';
+//require_once 'models/CommentModel.php';
+//require_once 'models/PostModel.php';
+namespace app\controllers;
+
+use app\models\CommentModel;
+use app\models\PostModel;
+
 class CommentsController {
-    private $commentModel;
-    private $postModel;
+    private CommentModel $commentModel;
+    private PostModel $postModel;
 
     public function __construct() {
         $this->commentModel = new CommentModel(); // Initialize the PostModel instance
