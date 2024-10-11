@@ -94,7 +94,11 @@ class CommentsController {
             exit;
         }
 //        require_once 'views/posts/commentedit.php';
-        View::render('views/posts/commentedit.php',['comment'=>$comment]);
+        if ($role === 'admin') {
+            View::render('views/admin/admin_comment_edit.php', ['postId'=>$postId,'comment'=>$comment]);
+            exit;
+        }
+        View::render('views/posts/commentedit.php',['postId'=>$postId,'comment'=>$comment]);
     }
 
     public function update($commentId, $postId) {

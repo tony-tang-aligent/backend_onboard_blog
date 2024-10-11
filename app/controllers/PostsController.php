@@ -4,7 +4,7 @@ namespace app\controllers;
 use app\models\CommentModel;
 use app\models\PostModel;
 use app\utils\View;
-use JetBrains\PhpStorm\NoReturn;
+//use JetBrains\PhpStorm\NoReturn;
 
 //require_once 'models/PostModel.php';
 //require_once 'models/CommentModel.php';
@@ -52,7 +52,7 @@ class PostsController {
 //        var_dump($comment);
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 //            require_once 'views/admin/posts/admin_show.php';
-            View::render('views/admin/posts/admin_show',['post'=>$post, 'comments'=>$comments]);
+            View::render('views/admin/posts/admin_show.php',['post'=>$post, 'comments'=>$comments]);
         }
 //        require_once 'views/posts/show.php';
         View::render('views/posts/show.php',['post'=>$post, 'comments'=>$comments]);
@@ -73,7 +73,7 @@ class PostsController {
         }
 
 //        require_once 'views/posts/edit.php';
-        View::render('views/posts/edit',['post'=>$post]);
+        View::render('views/posts/edit.php',['post'=>$post]);
     }
 
     // Handle the update request after form submission

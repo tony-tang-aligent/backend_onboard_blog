@@ -89,6 +89,7 @@ $router->add('GET', '/admin', function () {
     return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->index());
 });
 $router->add('GET', '/admin/posts/{id}', function ($id) {
+    //echo "Route hit with ID: {$id}";
     return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->show($id));
 });
 $router->add('GET', '/admin/users', function () {
@@ -115,6 +116,13 @@ $router->add('GET', '/admin/comments/{id}/approve', function ($id) {
 $router->add('GET', '/admin/comments/{id}/reject', function ($id) {
     return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->reject($id));
 });
+/*
+///admin/comments/<?= $comment->id; ?>/edit/<?= $post->id;
+$router->add('POST', '/admin/users/{id}/update', function ($id) {
+    return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->update($id));
+});
+*/
+
 
 
 // Only allow post creation if user is logged in

@@ -23,6 +23,7 @@
 
     </form>
     <a href="/posts/<?= $postId; ?>" class="btn btn-secondary">Cancel</a>
+<!--    <a href="/" class="btn btn-secondary">Cancel</a>-->
 </div>
 
 <!-- Bootstrap JS -->

@@ -21,7 +21,7 @@
         <?php if (isset($comments) && is_array($comments) && !empty($comments)): ?>
             <?php foreach ($comments as $comment): ?>
                 <li class="list-group-item">
-                    <strong><?= htmlspecialchars(isset($comment->name) ? $comment->name : 'Anonymous'); ?></strong>
+                    <strong><?= htmlspecialchars($comment->name ?? 'Anonymous'); ?></strong>
                     <span class="text-muted">on <?= htmlspecialchars($comment->created_at); ?></span>
                     <p><?= htmlspecialchars($comment->message); ?></p>
 

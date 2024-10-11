@@ -12,6 +12,7 @@ class View {
         $viewFile = $view;
 //        $viewFile = $view;
         // Check if the view file exists
+        //echo "Rendering view file: {$viewFile}";
         if (file_exists($viewFile)) {
             require_once $viewFile;
         } else {

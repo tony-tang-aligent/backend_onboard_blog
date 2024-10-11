@@ -115,8 +115,13 @@ class AdminController {
     {
         $comments = $this->commentModel->getAllComments();
 //        require_once 'views/admin/approve_comments.php';
-        View::render('views/admin/approve_comments',['comments'=>$comments]);
+        View::render('views/admin/approve_comments.php',['comments'=>$comments]);
     }
+
+//    public function showSingleComment($id): void
+//    {
+//        $comment
+//    }
 
     public function approve($commentId): void
     {

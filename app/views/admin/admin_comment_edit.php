@@ -9,7 +9,7 @@
 <body>
 <div class="container mt-5">
     <h1>Edit Comment</h1>
-    <form action="/comments/<?= $comment->id; ?>/posts/<?= $postId ?>/update" method="POST">
+    <form action="/comments/<?= $comment->id; ?>/posts/<?= $postId; ?>/update" method="POST">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" class="form-control" name="name" value="<?= htmlspecialchars($comment->name); ?>" placeholder="Your name (optional)">
@@ -22,7 +22,8 @@
         <button type="submit" class="btn btn-primary">Update Comment</button>
 
     </form>
-    <a href="/posts/<?= $postId; ?>" class="btn btn-secondary">Cancel</a>
+    <a href="/admin/posts/<?= $postId; ?>" class="btn btn-secondary">Cancel</a>
+<!--    <a href="/" class="btn btn-secondary">Cancel</a>-->
 </div>
 
 <!-- Bootstrap JS -->

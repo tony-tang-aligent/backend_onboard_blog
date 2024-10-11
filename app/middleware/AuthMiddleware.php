@@ -12,6 +12,6 @@ class AuthMiddleware {
         }
 
         // If permissions are valid, return the action to be executed
-        return $action;
+        return $action();
     }
 }
