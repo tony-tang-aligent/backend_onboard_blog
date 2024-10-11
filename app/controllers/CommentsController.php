@@ -6,6 +6,7 @@ namespace app\controllers;
 
 use app\models\CommentModel;
 use app\models\PostModel;
+use app\utils\View;
 
 class CommentsController {
     private CommentModel $commentModel;
@@ -92,7 +93,8 @@ class CommentsController {
             header('Location: /posts/' . $postId);
             exit;
         }
-        require_once 'views/posts/commentedit.php';
+//        require_once 'views/posts/commentedit.php';
+        View::render('views/posts/commentedit.php',['comment'=>$comment]);
     }
 
     public function update($commentId, $postId) {

@@ -2,6 +2,7 @@
 namespace app\controllers;
 //require_once 'models/UserModel.php';
 use app\models\UserModel;
+use app\utils\View;
 
 class UsersController {
 
@@ -13,12 +14,14 @@ class UsersController {
 
     public function tosignup(): void
     {
-        require_once 'views/users/signup.php';
+//        require_once 'views/users/signup.php';
+        View::render('views/users/signup.php');
     }
 
     public function tologin(): void
     {
-        require_once 'views/users/login.php';
+//        require_once 'views/users/login.php';
+        View::render('views/users/login.php');
     }
 
     public function signup(): void

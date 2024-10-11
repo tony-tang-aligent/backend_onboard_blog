@@ -3,6 +3,7 @@
 namespace app\controllers;
 use app\models\CommentModel;
 use app\models\PostModel;
+use app\utils\View;
 use JetBrains\PhpStorm\NoReturn;
 
 //require_once 'models/PostModel.php';
@@ -17,7 +18,8 @@ class PostsController {
     public function index(): void
     {
         $posts = $this->postModel->getPosts();
-        require_once 'views/home.php';
+//        require_once 'views/home.php';
+        View::render('views/home.php',['posts'=>$posts]);
     }
 
     public function create() :void {
@@ -49,9 +51,11 @@ class PostsController {
 //        var_dump($post);
 //        var_dump($comment);
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-            require_once 'views/admin/posts/admin_show.php';
+//            require_once 'views/admin/posts/admin_show.php';
+            View::render('views/admin/posts/admin_show',['post'=>$post, 'comments'=>$comments]);
         }
-        require_once 'views/posts/show.php';
+//        require_once 'views/posts/show.php';
+        View::render('views/posts/show.php',['post'=>$post, 'comments'=>$comments]);
     }
 
     public function edit($id): void
@@ -68,7 +72,8 @@ class PostsController {
             exit;
         }
 
-        require_once 'views/posts/edit.php';
+//        require_once 'views/posts/edit.php';
+        View::render('views/posts/edit',['post'=>$post]);
     }
 
     // Handle the update request after form submission

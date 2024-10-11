@@ -6,6 +6,7 @@ namespace app\controllers;
 use app\models\CommentModel;
 use app\models\PostModel;
 use app\models\UserModel;
+use app\utils\View;
 
 class AdminController {
 
@@ -22,7 +23,8 @@ class AdminController {
     public function index(): void
     {
         $posts = $this->postModel ->getPosts();
-        require_once 'views/admin/dashboard.php';
+//        require_once 'views/admin/dashboard.php';
+        View::render('views/admin/dashboard.php', ['posts' => $posts]);
     }
 
     public function show($id): void
@@ -38,13 +40,15 @@ class AdminController {
 //        var_dump($id);
 //        var_dump($post);
 //        var_dump($comment);
-        require_once 'views/admin/admin_show.php';
+//        require_once 'views/admin/admin_show.php';
+        View::render('views/admin/admin_show.php', ['post' => $post, 'comments' => $comments]);
     }
 
     public function users(): void
     {
         $users = $this->userModel->findAllUsers();
-        require_once 'views/admin/usermanagement.php';
+//        require_once 'views/admin/usermanagement.php';
+        View::render('views/admin/usermanagement.php', ['users' => $users]);
     }
 
     public function create(): void
@@ -74,7 +78,8 @@ class AdminController {
     public function edit($id): void
     {
         $user = $this->userModel->findUserByID($id);
-        require_once 'views/admin/admin_user_edit.php';
+//        require_once 'views/admin/admin_user_edit.php';
+        View::render('views/admin/admin_user_edit.php', ['user' => $user]);
     }
 
     public function update($id): void
@@ -109,7 +114,8 @@ class AdminController {
     public function showComment(): void
     {
         $comments = $this->commentModel->getAllComments();
-        require_once 'views/admin/approve_comments.php';
+//        require_once 'views/admin/approve_comments.php';
+        View::render('views/admin/approve_comments',['comments'=>$comments]);
     }
 
     public function approve($commentId): void
