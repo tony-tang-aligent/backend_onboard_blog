@@ -19,32 +19,23 @@ class CommentsController {
      * @return void
      */
     public function store($postId) {
-        $name = trim($_POST['name'] ?? '');
-        // Check if the name is empty
-        if (empty($name)) {
-            $name = 'Anonymous'; // Set default name
-        }
-        $message = $_POST['message'];
+        $name = trim($_POST['name'] ?? 'Anonymous');
+        $message = $_POST['message'] ?? '';
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
+        $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
+
         if (strlen($message) > 50) {
             $_SESSION['error'] = "Comment exceeds the maximum character limit.";
-            if ($role === 'admin') {
-                header('Location: /admin/posts/' . $postId);
-                exit;
-            }
-            header('Location: /posts/' . $postId);
+            header("Location: $redirectUrl");
             exit;
         }
 
         $this->comment->add($postId, $name, $message, $userId);
         $this->post->incrementCommentCount($postId);
 
-        if ($role === 'admin') {
-            header('Location: /admin/posts/' . $postId);
-            exit;
-        }
-        header('Location: /posts/' . $postId);
+        // Redirect after adding the comment
+        header("Location: $redirectUrl");
         exit;
     }
 

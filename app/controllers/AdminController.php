@@ -33,14 +33,10 @@ class AdminController {
      */
     public function show($id): void
     {
+        $post = [];
+        $comments = [];
         $post = $this->postModel->getPostByID($id);
         $comments = $this->commentModel->getApprovedComments($id);
-        if ($post == null) {
-            $post = [];
-        }
-        if ($comments == null) {
-            $comments = [];
-        }
         View::render('views/admin/admin_show.php', ['post' => $post, 'comments' => $comments]);
     }
 
@@ -77,13 +73,8 @@ class AdminController {
             $_SESSION['flash_message'] = "User created successfully.";
             header("Location: /admin/users");
         } else {
-            try {
-                // If the request method is not POST, throw an exception
-                throw new Exception("Invalid request method. User creation requires a POST request.");
-            } catch (Exception $e) {
-                // Handle the exception and display an error message
-                $this->handleError($e->getMessage());
-            }
+            http_response_code(400);
+            $this->handleError("Invalid request method. User creation requires a POST request.");
         }
     }
 
