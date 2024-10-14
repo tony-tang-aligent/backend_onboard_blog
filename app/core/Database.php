@@ -4,10 +4,6 @@ use PDO;
 use PDOException;
 
 class Database {
-//    private $host = 'mysql-blog';
-//    private $user = 'user';
-//    private $pass = 'userpassword';
-//    private $dbname = 'mydatabase';
     private $host;
     private $user;
     private $pass;
@@ -39,13 +35,21 @@ class Database {
         }
     }
 
-    // Prepare the SQL query
+    /** Prepare the SQL query
+     * @param $sql
+     * @return void
+     */
     public function query($sql): void
     {
         $this->stmt = $this->dbh->prepare($sql);
     }
 
-    // Bind the parameters
+    /** Bind the parameters
+     * @param $param
+     * @param $value
+     * @param $type
+     * @return void
+     */
     public function bind($param, $value, $type = null): void
     {
         if (is_null($type)) {
@@ -59,7 +63,9 @@ class Database {
         $this->stmt->bindValue($param, $value, $type);
     }
 
-    // Execute the prepared statement
+    /** Execute the prepared statement
+     * @return void
+     */
     public function execute() {
         try {
             return $this->stmt->execute(); // Execute the prepared statement
@@ -68,17 +74,20 @@ class Database {
         }
     }
 
-    // Get the result set as an array of objects
+    /** Get the result set as an array of objects
+     * @return mixed
+     */
     public function resultSet() {
         $this->execute();
         return $this->stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    // Get a single record as an object
+    /** Get a single record as an object
+     * @return mixed
+     */
     public function single() {
         $this->execute(); // Execute the prepared statement
         return $this->stmt->fetch(PDO::FETCH_OBJ); // Fetch a single record as an object
     }
-
 }
 

@@ -1,22 +1,23 @@
 <?php
-
-//require_once 'models/CommentModel.php';
-//require_once 'models/PostModel.php';
 namespace app\controllers;
 
-use app\models\CommentModel;
-use app\models\PostModel;
+use app\models\Comment;
+use app\models\Post;
 use app\utils\View;
 
 class CommentsController {
-    private CommentModel $commentModel;
-    private PostModel $postModel;
+    private Comment $comment;
+    private Post $post;
 
     public function __construct() {
-        $this->commentModel = new CommentModel(); // Initialize the PostModel instance
-        $this->postModel = new PostModel();
+        $this->comment = new Comment(); // Initialize the Post instance
+        $this->post = new Post();
     }
 
+    /** API crete and store new comment
+     * @param $postId
+     * @return void
+     */
     public function store($postId) {
         $name = trim($_POST['name'] ?? '');
         // Check if the name is empty
@@ -26,7 +27,6 @@ class CommentsController {
         $message = $_POST['message'];
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
-//        var_dump($name);
         if (strlen($message) > 50) {
             $_SESSION['error'] = "Comment exceeds the maximum character limit.";
             if ($role === 'admin') {
@@ -37,8 +37,8 @@ class CommentsController {
             exit;
         }
 
-        $this->commentModel->addComment($postId, $name, $message, $userId);
-        $this->postModel->incrementCommentCount($postId);
+        $this->comment->add($postId, $name, $message, $userId);
+        $this->post->incrementCommentCount($postId);
 
         if ($role === 'admin') {
             header('Location: /admin/posts/' . $postId);
@@ -46,27 +46,26 @@ class CommentsController {
         }
         header('Location: /posts/' . $postId);
         exit;
-//        // Redirect to the specific post page
-//        echo '<script type="text/javascript">';
-//        echo 'window.location.href="/posts/' . $postId . '";';
-//        echo '</script>';
-//        exit; // Ensure no further code runs
     }
 
-    public function delete($commentId, $postId) {
-        $comment = $this->commentModel->getCommentByID($commentId);
-        //var_dump($comment);
+    /** API delete a post
+     * @param $commentId
+     * @param $postId
+     * @return void
+     */
+    public function delete($commentId, $postId): void
+    {
+        $comment = $this->comment->getCommentByID($commentId);
         $role = $_SESSION['role'];
-        // Ensure the comment exists and belongs to the user (if user-based ownership)
+        // Ensure the comment exists
         if (!$comment) {
             header('Location: /posts/' . $postId);
             exit;
         }
-
         // Delete the comment
-        if ($this->commentModel->deleteComment($commentId)) {
+        if ($this->comment->delete($commentId)) {
             // Decrement comment count in the post
-            $this->postModel->decrementCommentCount($postId);
+            $this->post->decrementCommentCount($postId);
 
             if ($role === 'admin') {
                 header('Location: /admin/posts/' . $postId);
@@ -80,11 +79,16 @@ class CommentsController {
     }
 
 
-    public function edit($commentId, $postId) {
-        $comment = $this->commentModel->getCommentByID($commentId);
-
+    /** Edit a comment
+     * @param $commentId
+     * @param $postId
+     * @return void
+     */
+    public function edit($commentId, $postId): void
+    {
+        $comment = $this->comment->getCommentByID($commentId);
         $role = $_SESSION['role'];
-        // Ensure the post exists and that the current user is the owner of the post
+        // Ensure the post exists
         if (!$comment) {
             if ($role === 'admin') {
                 header('Location: /admin/posts/' . $postId);
@@ -93,7 +97,6 @@ class CommentsController {
             header('Location: /posts/' . $postId);
             exit;
         }
-//        require_once 'views/posts/commentedit.php';
         if ($role === 'admin') {
             View::render('views/admin/admin_comment_edit.php', ['postId'=>$postId,'comment'=>$comment]);
             exit;
@@ -101,6 +104,11 @@ class CommentsController {
         View::render('views/posts/commentedit.php',['postId'=>$postId,'comment'=>$comment]);
     }
 
+    /** Update a comment
+     * @param $commentId
+     * @param $postId
+     * @return void
+     */
     public function update($commentId, $postId) {
         $name = $_POST['name'] ?? 'Anonymous';
         $message = $_POST['message'];
@@ -113,10 +121,7 @@ class CommentsController {
         }
 
         // Update the comment in the database
-        $this->commentModel->updateComment($commentId, $name, $message);
-
-        // Redirect back to the post page
-        //var_dump($postId);
+        $this->comment->updateComment($commentId, $name, $message);
         if ($role === 'admin') {
             header('Location: /admin/posts/' . $postId);
             exit;
@@ -124,8 +129,4 @@ class CommentsController {
         header('Location: /posts/' . $postId);
         exit;
     }
-
-
-
-
 }

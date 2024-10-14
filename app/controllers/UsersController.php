@@ -1,29 +1,36 @@
 <?php
 namespace app\controllers;
-//require_once 'models/UserModel.php';
-use app\models\UserModel;
+//require_once 'models/User.php';
+use app\models\User;
 use app\utils\View;
 
 class UsersController {
 
-    private UserModel $userModel;
+    private User $userModel;
 
     public function __construct() {
-        $this->userModel = new UserModel();
+        $this->userModel = new User();
     }
 
+    /** direct to the signup page
+     * @return void
+     */
     public function tosignup(): void
     {
-//        require_once 'views/users/signup.php';
         View::render('views/users/signup.php');
     }
 
+    /** direct to the login page
+     * @return void
+     */
     public function tologin(): void
     {
-//        require_once 'views/users/login.php';
         View::render('views/users/login.php');
     }
 
+    /** API handle the signup request
+     * @return void
+     */
     public function signup(): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -48,6 +55,9 @@ class UsersController {
         }
     }
 
+    /** Handle the login logic
+     * @return void
+     */
     public function login(): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -58,8 +68,6 @@ class UsersController {
             $user = $this->userModel->findUserByUsername($username);
 
             if ($user && password_verify($password, $user->password)) {
-                // Start a session and store user information
-//                session_start();
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['username'] = $user->username;
                 $_SESSION['role'] = $user->role;
@@ -70,7 +78,6 @@ class UsersController {
                 header("Location: /");
                 exit;
             } else {
-                //var_dump($user);
                 echo "Invalid username or password.";
             }
         } else {
@@ -79,6 +86,9 @@ class UsersController {
         }
     }
 
+    /** handle the logout, delete session
+     * @return void
+     */
     public function logout() : void {
         session_unset();
         session_destroy();

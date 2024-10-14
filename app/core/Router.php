@@ -4,6 +4,12 @@ namespace app\core;
 class Router {
     private array $routes = [];
 
+    /** Adding route to the routes
+     * @param $method
+     * @param $path
+     * @param $action
+     * @return void
+     */
     public function add($method, $path, $action): void
     {
         // Convert path with parameters into a regular expression
@@ -15,6 +21,11 @@ class Router {
         ];
     }
 
+    /** resolve a route
+     * @param $method
+     * @param $uri
+     * @return mixed|void
+     */
     public function resolve($method, $uri) {
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && preg_match($route['pattern'], $uri, $matches)) {

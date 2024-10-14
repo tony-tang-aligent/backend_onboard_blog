@@ -1,32 +1,25 @@
 <?php
-//namespace app;
+use app\controllers\AdminController;
+use app\controllers\CommentsController;
+use app\controllers\HomeController;
+use app\controllers\PostsController;
+use app\controllers\UsersController;
+use app\core\Router;
+use app\middleware\AuthMiddleware;
 session_start();
-
-//require_once 'core/App.php';
-//require_once 'core/Controller.php';
-//require_once 'controllers/HomeController.php';
-//require_once 'core/Router.php';
-//require_once 'controllers/PostsController.php';
-//require_once 'controllers/CommentsController.php';
-//require_once 'controllers/UsersController.php';
-//require_once 'controllers/AdminController.php';
-
-function my_custom_autoloader($class_name) {
+function my_custom_autoloader($class_name): void
+{
     // Replace namespace separator with directory separator
     $class_name = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
-
     // Remove the "app" prefix from the class name
     // This assumes your namespace is always "app"
-    if (strpos($class_name, 'app' . DIRECTORY_SEPARATOR) === 0) {
+    if (str_starts_with($class_name, 'app' . DIRECTORY_SEPARATOR)) {
         $class_name = substr($class_name, strlen('app' . DIRECTORY_SEPARATOR));
     }
-
     // Define the base directory for the application
     $base_dir = __DIR__ . '/'; // Points to /var/www/html/
-
     // Construct the file path
     $file = $base_dir . $class_name . '.php';
-
     // Require the file if it exists
     if (file_exists($file)) {
         require_once $file;
@@ -39,15 +32,6 @@ function my_custom_autoloader($class_name) {
 // Register the autoloader
 spl_autoload_register('my_custom_autoloader');
 
-
-
-use app\controllers\AdminController;
-use app\controllers\CommentsController;
-use app\controllers\HomeController;
-use app\controllers\PostsController;
-use app\controllers\UsersController;
-use app\core\Router;
-use app\middleware\AuthMiddleware;
 $router = new Router();
 
 // Define all routes before the session check
@@ -111,10 +95,10 @@ $router->add('GET', '/admin/comments', function () {
     return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->showComment());
 });
 $router->add('GET', '/admin/comments/{id}/approve', function ($id) {
-    return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->approve($id));
+    return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->changeCommentStatus($id, 'approve'));
 });
 $router->add('GET', '/admin/comments/{id}/reject', function ($id) {
-    return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->reject($id));
+    return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->changeCommentStatus($id, 'reject'));
 });
 /*
 ///admin/comments/<?= $comment->id; ?>/edit/<?= $post->id;

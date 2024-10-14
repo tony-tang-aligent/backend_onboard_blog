@@ -1,0 +1,10 @@
+# Database credentials
+MYSQL_HOST=your_mysql_host
+MYSQL_USER=your_mysql_user
+MYSQL_PASSWORD=your_mysql_password
+MYSQL_DATABASE=your_mysql_database
+
+# PHP environment variables
+MYSQL_ROOT_PASSWORD=your_mysql_root_password
+XDEBUG_MODE=your_xdebug_mode
+XDEBUG_CONFIG=remote_host=your_remote_host remote_enable=1

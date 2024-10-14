@@ -3,16 +3,17 @@
 namespace app\utils;
 
 class View {
-    public static function render($view, $data = []): void
+    /** Render the specified view
+     * @param $view
+     * @param array $data
+     * @return void
+     */
+    public static function render($view, array $data = []): void
     {
         // Extract data to variables
         extract($data);
-
         // Construct the path to the view file
         $viewFile = $view;
-//        $viewFile = $view;
-        // Check if the view file exists
-        //echo "Rendering view file: {$viewFile}";
         if (file_exists($viewFile)) {
             require_once $viewFile;
         } else {

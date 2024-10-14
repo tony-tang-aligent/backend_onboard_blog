@@ -1,27 +1,28 @@
 <?php
-//require_once 'views/home.php';
 namespace app\controllers;
-use app\models\CommentModel;
-use app\models\PostModel;
+use app\models\Comment;
+use app\models\Post;
 use app\utils\View;
-//use JetBrains\PhpStorm\NoReturn;
-
-//require_once 'models/PostModel.php';
-//require_once 'models/CommentModel.php';
 class PostsController {
-    private PostModel $postModel;
-    private CommentModel $commentModel;
+    private Post $postModel;
+    private Comment $commentModel;
     public function __construct() {
-        $this->postModel = new PostModel(); // Initialize the PostModel instance
-        $this->commentModel = new CommentModel();
+        $this->postModel = new Post(); // Initialize the Post instance
+        $this->commentModel = new Comment();
     }
+
+    /** API show all the posts
+     * @return void
+     */
     public function index(): void
     {
         $posts = $this->postModel->getPosts();
-//        require_once 'views/home.php';
         View::render('views/home.php',['posts'=>$posts]);
     }
 
+    /** API create a new post
+     * @return void
+     */
     public function create() :void {
         $title = $_POST['title'];
         $body = $_POST['body'];
@@ -37,6 +38,10 @@ class PostsController {
         }
     }
 
+    /** API show a specific post
+     * @param $id
+     * @return void
+     */
     public function show($id): void
     {
         $post = $this->postModel->getPostByID($id);
@@ -47,17 +52,16 @@ class PostsController {
         if ($comments == null) {
             $comments = [];
         }
-//        var_dump($id);
-//        var_dump($post);
-//        var_dump($comment);
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-//            require_once 'views/admin/posts/admin_show.php';
             View::render('views/admin/posts/admin_show.php',['post'=>$post, 'comments'=>$comments]);
         }
-//        require_once 'views/posts/show.php';
         View::render('views/posts/show.php',['post'=>$post, 'comments'=>$comments]);
     }
 
+    /** API edit a post
+     * @param $id
+     * @return void
+     */
     public function edit($id): void
     {
         $post = $this->postModel->getPostByID($id);
@@ -71,19 +75,19 @@ class PostsController {
             header('Location: /');
             exit;
         }
-
-//        require_once 'views/posts/edit.php';
         View::render('views/posts/edit.php',['post'=>$post]);
     }
 
-    // Handle the update request after form submission
+    /** API Handle the update request after form submission
+     * @param $postId
+     * @return void
+     */
     public function update($postId): void
     {
         $title = $_POST['title'];
         $body = $_POST['body'];
         $role = $_SESSION['role'];
         // Update the post in the database
-
         if ($this->postModel->updatePost($postId, $title, $body)) {
             if ($role === 'admin') {
                 header('Location: /admin/posts/' . $postId);
@@ -96,11 +100,15 @@ class PostsController {
         }
     }
 
+    /** API delete a post
+     * @param $id
+     * @return void
+     */
     public function delete($id): void
     {
         $post = $this->postModel->getPostByID($id);
         $role = $_SESSION['role'];
-        // Ensure the post exists and that the current user is the owner
+        // Ensure the post exists
         if (!$post) {
             header('Location: /');
             exit;
@@ -118,6 +126,4 @@ class PostsController {
             echo "Failed to delete post.";
         }
     }
-
-
 }
