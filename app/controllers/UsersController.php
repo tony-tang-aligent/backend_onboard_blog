@@ -39,12 +39,12 @@ class UsersController {
             $password = $_POST['password'];
 
             if ($this->userModel->findUserByUsername($username)) {
-                echo "Username is already taken.";
+                $_SESSION['flash_message'] = "Username is already taken.";
                 return;
             }
 
             if ($this->userModel->findUserByEmail($email)) {
-                echo "Email is already registered";
+                $_SESSION['flash_message'] = "Email is already registered.";
                 return;
             }
 
@@ -71,14 +71,11 @@ class UsersController {
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['username'] = $user->username;
                 $_SESSION['role'] = $user->role;
-                if ($user->role === 'admin') {
-                    header("Location: /admin");
-                    exit;
-                }
-                header("Location: /");
+                $redirectUrl = ($user->role === 'admin') ? '/admin' : '/';
+                header("Location: $redirectUrl");
                 exit;
             } else {
-                echo "Invalid username or password.";
+                $_SESSION['flash_message'] = "Invalid username or password.";
             }
         } else {
             // Show login form

@@ -48,25 +48,22 @@ class CommentsController {
     {
         $comment = $this->comment->getCommentByID($commentId);
         $role = $_SESSION['role'];
+        $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
+
         // Ensure the comment exists
         if (!$comment) {
-            header('Location: /posts/' . $postId);
+            header("Location: $redirectUrl");
             exit;
         }
-        // Delete the comment
-        if ($this->comment->delete($commentId)) {
-            // Decrement comment count in the post
-            $this->post->decrementCommentCount($postId);
 
-            if ($role === 'admin') {
-                header('Location: /admin/posts/' . $postId);
-                exit;
-            }
-            header('Location: /posts/' . $postId);
-            exit;
-        } else {
-            echo "Failed to delete comment.";
+        // Delete the comment and decrement count
+        if ($this->comment->delete($commentId)) {
+            $this->post->decrementCommentCount($postId);
         }
+
+        // Redirect after the action
+        header("Location: $redirectUrl");
+        exit;
     }
 
 
@@ -79,20 +76,17 @@ class CommentsController {
     {
         $comment = $this->comment->getCommentByID($commentId);
         $role = $_SESSION['role'];
-        // Ensure the post exists
+        $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
+
+        // Ensure the comment exists
         if (!$comment) {
-            if ($role === 'admin') {
-                header('Location: /admin/posts/' . $postId);
-                exit;
-            }
-            header('Location: /posts/' . $postId);
+            header("Location: $redirectUrl");
             exit;
         }
-        if ($role === 'admin') {
-            View::render('views/admin/admin_comment_edit.php', ['postId'=>$postId,'comment'=>$comment]);
-            exit;
-        }
-        View::render('views/posts/commentedit.php',['postId'=>$postId,'comment'=>$comment]);
+
+        // Render the appropriate view based on the role
+        $view = ($role === 'admin') ? 'views/admin/admin_comment_edit.php' : 'views/posts/commentedit.php';
+        View::render($view, ['postId' => $postId, 'comment' => $comment]);
     }
 
     /** Update a comment
@@ -102,8 +96,10 @@ class CommentsController {
      */
     public function update($commentId, $postId) {
         $name = $_POST['name'] ?? 'Anonymous';
-        $message = $_POST['message'];
+        $message = $_POST['message'] ?? '';
         $role = $_SESSION['role'];
+        $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
+
         // Ensure the message does not exceed the character limit
         if (strlen($message) > 50) {
             $_SESSION['error'] = "Comment exceeds the maximum character limit.";
@@ -113,11 +109,9 @@ class CommentsController {
 
         // Update the comment in the database
         $this->comment->updateComment($commentId, $name, $message);
-        if ($role === 'admin') {
-            header('Location: /admin/posts/' . $postId);
-            exit;
-        }
-        header('Location: /posts/' . $postId);
+
+        // Redirect after updating the comment
+        header("Location: $redirectUrl");
         exit;
     }
 }

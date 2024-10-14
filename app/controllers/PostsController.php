@@ -23,19 +23,19 @@ class PostsController {
     /** API create a new post
      * @return void
      */
-    public function create() :void {
-        $title = $_POST['title'];
-        $body = $_POST['body'];
-        $userId = $_SESSION['user_id']; // Make sure the user is logged in
+    public function create(): void {
+        $title = $_POST['title'] ?? '';
+        $body = $_POST['body'] ?? '';
+        $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
+
         // Add the post to the database
         $this->postModel->addPost($title, $body, $userId);
-        if ($role === 'admin') {
-            header("Location: /admin");
-        } else {
-            header('Location: /');
-            exit; // Ensure no further code runs
-        }
+
+        // Set the redirect URL based on the role
+        $redirectUrl = ($role === 'admin') ? '/admin' : '/';
+        header("Location: $redirectUrl");
+        exit;
     }
 
     /** API show a specific post
@@ -44,14 +44,10 @@ class PostsController {
      */
     public function show($id): void
     {
+        $post = [];
+        $comments = [];
         $post = $this->postModel->getPostByID($id);
         $comments = $this->commentModel->getApprovedComments($id);
-        if ($post == null) {
-            $post = [];
-        }
-        if ($comments == null) {
-            $comments = [];
-        }
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             View::render('views/admin/posts/admin_show.php',['post'=>$post, 'comments'=>$comments]);
         }
@@ -62,41 +58,36 @@ class PostsController {
      * @param $id
      * @return void
      */
-    public function edit($id): void
-    {
+    public function edit($id): void {
         $post = $this->postModel->getPostByID($id);
         $role = $_SESSION['role'];
-        // Ensure the post exists and that the current user is the owner of the post
-        if (!$post ) {
-            if ($role === 'admin') {
-                header('Location: /admin');
-                exit;
-            }
-            header('Location: /');
+        $redirectUrl = ($role === 'admin') ? '/admin' : '/';
+
+        // Ensure the post exists
+        if (!$post) {
+            header("Location: $redirectUrl");
             exit;
         }
-        View::render('views/posts/edit.php',['post'=>$post]);
+
+        // Render the view
+        View::render('views/posts/edit.php', ['post' => $post]);
     }
 
     /** API Handle the update request after form submission
      * @param $postId
      * @return void
      */
-    public function update($postId): void
-    {
-        $title = $_POST['title'];
-        $body = $_POST['body'];
+    public function update($postId): void {
+        $title = $_POST['title'] ?? '';
+        $body = $_POST['body'] ?? '';
         $role = $_SESSION['role'];
+
         // Update the post in the database
         if ($this->postModel->updatePost($postId, $title, $body)) {
-            if ($role === 'admin') {
-                header('Location: /admin/posts/' . $postId);
-                exit;
-            }
-            header('Location: /posts/' . $postId);
+            // Redirect based on the role
+            $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
+            header("Location: $redirectUrl");
             exit;
-        } else {
-            echo "Failed to update post.";
         }
     }
 
@@ -104,26 +95,21 @@ class PostsController {
      * @param $id
      * @return void
      */
-    public function delete($id): void
-    {
+    public function delete($id): void {
         $post = $this->postModel->getPostByID($id);
         $role = $_SESSION['role'];
+        $redirectUrl = ($role === 'admin') ? '/admin' : '/';
+
         // Ensure the post exists
         if (!$post) {
-            header('Location: /');
+            header("Location: $redirectUrl");
             exit;
         }
 
-        // Delete the post
+        // Delete the post and redirect
         if ($this->postModel->deletePost($id)) {
-            if ($role === 'admin') {
-                header('Location: /admin');
-                exit;
-            }
-            header('Location: /');
+            header("Location: $redirectUrl");
             exit;
-        } else {
-            echo "Failed to delete post.";
         }
     }
 }
