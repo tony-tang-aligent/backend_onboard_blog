@@ -10,12 +10,12 @@ services:
       - ./app:/var/www/html  # Mount the app folder
       - ./xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini  # Mount the Xdebug config
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=mydatabase
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=userpassword
-      - XDEBUG_MODE=debug
-      - XDEBUG_CONFIG=remote_host=host.docker.internal remote_enable=1
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - XDEBUG_MODE=${XDEBUG_MODE}
+      - XDEBUG_CONFIG=${XDEBUG_CONFIG}
 
     ports:
       - "9004:9004"  # Xdebug listening port

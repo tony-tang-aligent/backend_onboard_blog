@@ -4,16 +4,24 @@ use PDO;
 use PDOException;
 
 class Database {
-    private $host = 'mysql-blog';
-    private $user = 'user';
-    private $pass = 'userpassword';
-    private $dbname = 'mydatabase';
+//    private $host = 'mysql-blog';
+//    private $user = 'user';
+//    private $pass = 'userpassword';
+//    private $dbname = 'mydatabase';
+    private $host;
+    private $user;
+    private $pass;
+    private $dbname;
 
     private $dbh;
     private $stmt;
     private $error;
 
     public function __construct() {
+        $this->host = getenv('MYSQL_HOST');
+        $this->user = getenv('MYSQL_USER');
+        $this->pass = getenv('MYSQL_PASSWORD');
+        $this->dbname = getenv('MYSQL_DATABASE');
 
         // Set the DSN (Data Source Name)
         $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
