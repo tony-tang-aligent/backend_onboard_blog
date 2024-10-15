@@ -107,10 +107,10 @@ class PostsController {
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? '/admin' : '/';
 
+
         // Ensure the post exists
         if (!$post) {
-            header("Location: $redirectUrl");
-            exit;
+            $redirectUrl = '/';
         }
 
         // Delete the post and redirect

@@ -25,25 +25,32 @@ class CommentsController {
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
 
+        // Initialize error message
+        $error = null;
+
+        // Validate the message length
         if (strlen($message) > 50) {
-            $_SESSION['error'] = "Comment exceeds the maximum character limit.";
-            header("Location: $redirectUrl");
-            exit;
+            $error = "Comment exceeds the maximum character limit.";
+        } else {
+            $postData = [
+                'postId' => $postId,
+                'name' => $name,
+                'message' => $message,
+                'userId' => $userId
+            ];
+            $this->comment->create($postData);
+            $this->post->incrementCommentCount($postId);
         }
 
-        $postData = [
-            'postId'=>$postId,
-            'name'=>$name,
-            'message'=>$message,
-            'userId'=>$userId
-        ];
-        $this->comment->create($postData);
-        $this->post->incrementCommentCount($postId);
-
-        // Redirect after adding the comment
+        // Set error message in session if exists
+        if ($error) {
+            $_SESSION['error'] = $error;
+        }
+        // Redirect after adding the comment or encountering an error
         header("Location: $redirectUrl");
         exit;
     }
+
 
     /** API delete a post
      * @param $commentId
@@ -56,15 +63,19 @@ class CommentsController {
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
 
+        $error = null;
         // Ensure the comment exists
         if (!$comment) {
-            header("Location: $redirectUrl");
-            exit;
+            $error = "Comment not found.";
+        } else {
+            // Delete the comment and decrement count
+            $this->comment->delete($commentId);
+            $this->post->decrementCommentCount($postId);
         }
-
-        // Delete the comment and decrement count
-        $this->comment->delete($commentId);
-        $this->post->decrementCommentCount($postId);
+        // Set error message in session if exists
+        if ($error) {
+            $_SESSION['error'] = $error;
+        }
 
         // Redirect after the action
         header("Location: $redirectUrl");
@@ -106,22 +117,32 @@ class CommentsController {
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
 
-        // Ensure the message does not exceed the character limit
+        $error = null;
         if (strlen($message) > 50) {
-            $_SESSION['error'] = "Comment exceeds the maximum character limit.";
-            header("Location: /comments/$commentId/edit/$postId");
-            exit;
+            $error = "Comment exceeds the maximum character limit.";
+        } else {
+            // Prepare post data
+            $postData = [
+                'commentId' => $commentId,
+                'name' => $name,
+                'message' => $message,
+            ];
+
+            // Attempt to update the comment in the database
+            try {
+                $this->comment->update($commentId, $postData);
+            } catch (\Exception $e) {
+                $error = "Failed to update comment: " . $e->getMessage();
+            }
+        }
+        // Set error message in session if exists
+        if ($error) {
+            $_SESSION['error'] = $error;
+            // Redirect to edit page on error
+            $redirectUrl = "/comments/$commentId/edit/$postId";
         }
 
-        $postData = [
-            'commentId'=>$commentId,
-            'name'=> $name,
-            'message'=>$message,
-        ];
-        // Update the comment in the database
-        $this->comment->update($commentId, $postData);
-
-        // Redirect after updating the comment
+        // Redirect after the action
         header("Location: $redirectUrl");
         exit;
     }
