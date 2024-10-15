@@ -48,7 +48,7 @@ class UsersController {
                 return;
             }
 
-            $this->userModel->register($username, $email, $password);
+            $this->userModel->create($username, $email, $password);
             header("Location: /showlogin");
         } else {
             $this->tosignup();

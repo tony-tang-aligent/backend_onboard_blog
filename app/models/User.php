@@ -1,24 +1,21 @@
 <?php
 namespace app\models;
-use app\core\Database;
 
-class User extends Database
+class User extends Entity
 {
     /** Model Create a new user and insert into the database
-     * @param $username
-     * @param $email
-     * @param $password
-     * @return null
+     * @param array $data
+     * @return void
      */
-    public function register($username, $email, $password)
+    public function create(array $data): void
     {
         // Hash the password before storing
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $this->query("INSERT INTO Users (username, email, password) VALUES (:username, :email, :password)");
-        $this->bind(':username', $username);
-        $this->bind(':email', $email);
-        $this->bind(':password', $hashedPassword);
-        return $this->execute();
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $this->db->query("INSERT INTO Users (username, email, password) VALUES (:username, :email, :password)");
+        $this->db->bind(':username', $data['username']);
+        $this->db->bind(':email', $data['email']);
+        $this->db->bind(':password', $hashedPassword);
+        $this->db->execute();
     }
 
     /** Model Retrieve a user by username
@@ -27,9 +24,9 @@ class User extends Database
      */
     public function findUserByUsername($username)
     {
-        $this->query("SELECT * FROM Users WHERE username = :username");
-        $this->bind(':username', $username);
-        return $this->single();
+        $this->db->query("SELECT * FROM Users WHERE username = :username");
+        $this->db->bind(':username', $username);
+        return $this->db->single();
     }
 
     /** Model Retrieve a user by email
@@ -38,36 +35,34 @@ class User extends Database
      */
     public function findUserByEmail($email)
     {
-        $this->query("SELECT * FROM Users WHERE email = :email");
-        $this->bind(':email', $email);
-        return $this->single();
+        $this->db->query("SELECT * FROM Users WHERE email = :email");
+        $this->db->bind(':email', $email);
+        return $this->db->single();
     }
 
     /** Model Find all users
      * @return mixed
      */
     public function findAllUsers() {
-        $this->query("SELECT * FROM Users");
-        return $this->resultSet();
+        $this->db->query("SELECT * FROM Users");
+        return $this->db->resultSet();
     }
 
     /** Model Update the user information
      * @param $id
-     * @param $username
-     * @param $email
-     * @param $hashedPassword
-     * @param $role
-     * @return null
+     * @param array $data
+     * @return void
      */
-    public function updateUser($id, $username, $email, $hashedPassword, $role) {
+    public function update($id, array $data): void
+    {
         $query = "UPDATE Users SET username = :username, email = :email, password = :password, role = :role WHERE id = :id";
-        $this->query($query);
-        $this->bind(':username', $username);
-        $this->bind(':email', $email);
-        $this->bind(':password', $hashedPassword);
-        $this->bind(':role', $role);
-        $this->bind(':id', $id);
-        return $this->execute();
+        $this->db->query($query);
+        $this->db->bind(':username', $data['username']);
+        $this->db->bind(':email', $data['email']);
+        $this->db->bind(':password', $data['hashedPassword']);
+        $this->db->bind(':role', $data['role']);
+        $this->db->bind(':id', $id);
+        $this->db->execute();
     }
 
 
@@ -78,20 +73,20 @@ class User extends Database
     public function findUserByID($id)
     {
         $query = "SELECT * FROM Users WHERE id = :id";
-        $this->query($query);
-        $this->bind(':id', $id);
-        return $this->single();
+        $this->db->query($query);
+        $this->db->bind(':id', $id);
+        return $this->db->single();
     }
 
     /** Model Delete a user by ID
      * @param $id
-     * @return null
+     * @return void
      */
-    public function deleteUserByID($id)
+    public function delete($id): void
     {
-        $this->query("DELETE FROM Users WHERE id = :id");
-        $this->bind(':id', $id);
-        return $this->execute();
+        $this->db->query("DELETE FROM Users WHERE id = :id");
+        $this->db->bind(':id', $id);
+        $this->db->execute();
     }
 }
 

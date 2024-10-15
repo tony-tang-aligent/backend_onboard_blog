@@ -69,7 +69,7 @@ class AdminController {
                 return;
             }
 
-            $this->userModel->register($username, $email, $password);
+            $this->userModel->create($username, $email, $password);
             $_SESSION['flash_message'] = "User created successfully.";
             header("Location: /admin/users");
         } else {
@@ -107,7 +107,7 @@ class AdminController {
             $hashedPassword = $user->password;
         }
         // Update the user's data
-        $this->userModel->updateUser($id, $username, $email, $hashedPassword, $role);
+        $this->userModel->update($id, $username, $email, $hashedPassword, $role);
         // Redirect back to the user management page
         header("Location: /admin/users");
     }
@@ -118,7 +118,7 @@ class AdminController {
      */
     public function delete($id): void
     {
-        $this->userModel->deleteUserByID($id);
+        $this->userModel->delete($id);
         header("Location: /admin/users");
     }
 
