@@ -1,40 +1,51 @@
 <?php
 namespace app\models;
-use app\core\Database;
+use InvalidArgumentException;
 
-class Comment {
-    private Database $db;
+class Comment extends Entity {
 
-    public function __construct() {
-        $this->db = new Database();
-    }
-
-    /** Model add a post to the DB
-     * @param $postId
-     * @param $name
-     * @param $message
-     * @param $userId
-     * @return null
+    /** API Create a new Post
+     * @param array $data
+     * @return void
      */
-    public function add($postId, $name, $message, $userId) {
+    public function create(array $data): void
+    {
         $this->db->query('INSERT INTO Comments (post_id, name, message, user_id, created_at, status) VALUES (:post_id,:name, :message, :userId, NOW(), "pending")');
-        $this->db->bind('post_id', $postId);
-        $this->db->bind(':name', $name);
-        $this->db->bind(':message',$message);
-        $this->db->bind(':userId', $userId);
-        return $this->db->execute();
+        $this->db->bind('post_id', $data['postId']);
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':message',$data['message']);
+        $this->db->bind(':userId', $data['userId']);
+        $this->db->execute();
     }
 
     /** Model delete a post from the DB
-     * @param $commentId
-     * @return null
+     * @param $id
+     * @return void
      */
-    public function delete($commentId) {
+    public function delete($id): void
+    {
         $sql = "DELETE FROM Comments WHERE id = :id";
         $this->db->query($sql);
-        $this->db->bind(':id', $commentId);
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+    }
 
-        return $this->db->execute();
+    /** Model update a comment based on its id
+     * @param $id
+     * @param array $data
+     * @return void
+     */
+    public function update($id, array $data): void
+    {
+        // Prepare the SQL query
+        $this->db->query("UPDATE Comments SET name = :name, message = :message WHERE id = :commentId");
+
+        // Bind the parameters
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':message', $data['message']);
+        $this->db->bind(':commentId', $data['commentId']);
+
+        $this->db->execute();
     }
 
     /** Model get a comment based on its ID
@@ -48,24 +59,7 @@ class Comment {
         return $this->db->single();
     }
 
-    /** Model update a comment based on its id
-     * @param $commentId
-     * @param $name
-     * @param $message
-     * @return null
-     */
-    public function updateComment($commentId, $name, $message) {
-        // Prepare the SQL query
-        $this->db->query("UPDATE Comments SET name = :name, message = :message WHERE id = :commentId");
 
-        // Bind the parameters
-        $this->db->bind(':name', $name);
-        $this->db->bind(':message', $message);
-        $this->db->bind(':commentId', $commentId);
-
-        // Execute the query
-        return $this->db->execute();
-    }
 
     /** Model get all pending comments
      * @return mixed
@@ -87,6 +81,25 @@ class Comment {
         return $this->db->resultSet();
     }
 
+    /** Model Retrieve all the comments based on the status
+     * @param $status
+     * @return array
+     */
+    public function getCommentsByStatus($status): array
+    {
+        // Ensure that the status is valid before executing the query
+        $allowedStatuses = ['pending', 'approved', 'rejected'];
+        if (!in_array($status, $allowedStatuses)) {
+            throw new InvalidArgumentException('Invalid status provided.');
+        }
+
+        $sql = "SELECT * FROM comments WHERE status = :status";
+        $this->db->query($sql);
+        $this->db->bind(':status', $status);
+
+        return  $this->db->execute();
+    }
+
     /** Model admin user update the status of a comment
      * @param $commentId
      * @param $status
@@ -99,4 +112,7 @@ class Comment {
         $this->db->bind(':commentId', $commentId);
         return $this->db->execute();
     }
+
+
+
 }

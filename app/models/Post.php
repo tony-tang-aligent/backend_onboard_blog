@@ -1,13 +1,6 @@
 <?php
 namespace app\models;
-use app\core\Database;
-class Post {
-    private $db;
-
-    public function __construct() {
-        // Create a new database connection using the Database class
-        $this->db = new Database();
-    }
+class Post extends Entity {
 
     /** Model Add a post
      * @param $title
@@ -100,6 +93,35 @@ class Post {
     }
 
 
+    public function create(array $data): void
+    {
+        $sql = "INSERT INTO Posts (title, body, user_id, created_at) 
+                VALUES (:title, :body, :userId, NOW())";
 
+        $this->db->query($sql);
+        // Bind parameters to prevent SQL injection
+        $this->db->bind(':title', $data['title']);
+        $this->db->bind(':body', $data['body']);
+        $this->db->bind(':userId', $data['userId']);
+        $this->db->execute();
+    }
+
+    public function update(int $id, array $data): void
+    {
+        $sql = "UPDATE Posts SET title = :title, body = :body, updated_at = NOW() WHERE id = :id";
+        $this->db->query($sql);
+        $this->db->bind(':title', $data['title']);
+        $this->db->bind(':body', $data['body']);
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+    }
+
+    public function delete(int $id): void
+    {
+        $sql = "DELETE FROM Posts WHERE id = :id";
+        $this->db->query($sql);
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+    }
 }
 

@@ -18,7 +18,7 @@ class CommentsController {
      * @param $postId
      * @return void
      */
-    public function store($postId) {
+    public function add($postId) {
         $name = trim($_POST['name'] ?? 'Anonymous');
         $message = $_POST['message'] ?? '';
         $userId = $_SESSION['user_id'];
@@ -31,7 +31,13 @@ class CommentsController {
             exit;
         }
 
-        $this->comment->add($postId, $name, $message, $userId);
+        $postData = [
+            'postId'=>$postId,
+            'name'=>$name,
+            'message'=>$message,
+            'userId'=>$userId
+        ];
+        $this->comment->create($postData);
         $this->post->incrementCommentCount($postId);
 
         // Redirect after adding the comment
@@ -57,9 +63,8 @@ class CommentsController {
         }
 
         // Delete the comment and decrement count
-        if ($this->comment->delete($commentId)) {
-            $this->post->decrementCommentCount($postId);
-        }
+        $this->comment->delete($commentId);
+        $this->post->decrementCommentCount($postId);
 
         // Redirect after the action
         header("Location: $redirectUrl");
@@ -92,9 +97,10 @@ class CommentsController {
     /** Update a comment
      * @param $commentId
      * @param $postId
+     * @param array $data
      * @return void
      */
-    public function update($commentId, $postId) {
+    public function update($commentId, $postId, array $data) {
         $name = $_POST['name'] ?? 'Anonymous';
         $message = $_POST['message'] ?? '';
         $role = $_SESSION['role'];
@@ -107,8 +113,13 @@ class CommentsController {
             exit;
         }
 
+        $postData = [
+            'commentId'=>$commentId,
+            'name'=> $name,
+            'message'=>$message,
+        ];
         // Update the comment in the database
-        $this->comment->updateComment($commentId, $name, $message);
+        $this->comment->update($commentId, $postData);
 
         // Redirect after updating the comment
         header("Location: $redirectUrl");

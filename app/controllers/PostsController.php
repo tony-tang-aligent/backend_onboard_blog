@@ -4,11 +4,11 @@ use app\models\Comment;
 use app\models\Post;
 use app\utils\View;
 class PostsController {
-    private Post $postModel;
-    private Comment $commentModel;
+    private Post $post;
+    private Comment $comment;
     public function __construct() {
-        $this->postModel = new Post(); // Initialize the Post instance
-        $this->commentModel = new Comment();
+        $this->post = new Post(); // Initialize the Post instance
+        $this->comment = new Comment();
     }
 
     /** API show all the posts
@@ -16,7 +16,7 @@ class PostsController {
      */
     public function index(): void
     {
-        $posts = $this->postModel->getPosts();
+        $posts = $this->post->getPosts();
         View::render('views/home.php',['posts'=>$posts]);
     }
 
@@ -29,8 +29,13 @@ class PostsController {
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
 
+        $postData = [
+            'title' => $title,
+            'body' => $body,
+            'userId' => $userId
+        ];
         // Add the post to the database
-        $this->postModel->addPost($title, $body, $userId);
+        $this->post->create($postData);
 
         // Set the redirect URL based on the role
         $redirectUrl = ($role === 'admin') ? '/admin' : '/';
@@ -46,8 +51,8 @@ class PostsController {
     {
         $post = [];
         $comments = [];
-        $post = $this->postModel->getPostByID($id);
-        $comments = $this->commentModel->getApprovedComments($id);
+        $post = $this->post->getPostByID($id);
+        $comments = $this->comment->getApprovedComments($id);
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             View::render('views/admin/posts/admin_show.php',['post'=>$post, 'comments'=>$comments]);
         }
@@ -59,7 +64,7 @@ class PostsController {
      * @return void
      */
     public function edit($id): void {
-        $post = $this->postModel->getPostByID($id);
+        $post = $this->post->getPostByID($id);
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? '/admin' : '/';
 
@@ -82,13 +87,15 @@ class PostsController {
         $body = $_POST['body'] ?? '';
         $role = $_SESSION['role'];
 
+        $postData = [
+            'title' => $title,
+            'body' => $body
+        ];
         // Update the post in the database
-        if ($this->postModel->updatePost($postId, $title, $body)) {
-            // Redirect based on the role
-            $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
-            header("Location: $redirectUrl");
-            exit;
-        }
+        $this->post->update($postId, $postData);
+        $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
+        header("Location: $redirectUrl");
+        exit;
     }
 
     /** API delete a post
@@ -96,7 +103,7 @@ class PostsController {
      * @return void
      */
     public function delete($id): void {
-        $post = $this->postModel->getPostByID($id);
+        $post = $this->post->getPostByID($id);
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? '/admin' : '/';
 
@@ -107,9 +114,8 @@ class PostsController {
         }
 
         // Delete the post and redirect
-        if ($this->postModel->deletePost($id)) {
-            header("Location: $redirectUrl");
-            exit;
-        }
+        $this->post->delete($id);
+        header("Location: $redirectUrl");
+        exit;
     }
 }

@@ -50,7 +50,7 @@ $router->add('GET', '/posts/{id}', [new PostsController(), 'show']);
 $router->add('GET', '/posts/{id}/edit', [new PostsController(), 'edit']);
 $router->add('POST', '/posts/{id}/update', [new PostsController(), 'update']);
 $router->add('POST', '/posts/{id}/delete', [new PostsController(), 'delete']);
-$router->add('POST', '/posts/{id}/comments', [new CommentsController(), 'store']);
+$router->add('POST', '/posts/{id}/comments', [new CommentsController(), 'add']);
 $router->add('POST', '/comments/{commentId}/posts/{postId}/update', [new CommentsController(), 'update']);
 $router->add('GET', '/comments/{id}', [new CommentsController(), 'show']);
 $router->add('POST', '/comments/{commentId}/delete/{postId}', [new CommentsController(), 'delete']);
