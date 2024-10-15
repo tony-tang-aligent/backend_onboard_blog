@@ -120,6 +120,17 @@ class Comment implements EntityInterface
         return $this->db->execute();
     }
 
+    /** Model Get the comment count for a specific post
+     * @param int $postId
+     * @return int
+     */
+    public function getCommentCount(int $postId): int {
+        $this->db->query("SELECT COUNT(*) as comment_count FROM Comments WHERE post_id = :post_id");
+        $this->db->bind(':post_id', $postId);
+        $result = $this->db->single();
+        return (int)$result->comment_count;
+    }
+
 
 
 }

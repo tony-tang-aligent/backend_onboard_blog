@@ -39,7 +39,6 @@ class CommentsController {
                 'userId' => $userId
             ];
             $this->comment->create($postData);
-            $this->post->incrementCommentCount($postId);
         }
 
         // Set error message in session if exists
@@ -70,7 +69,6 @@ class CommentsController {
         } else {
             // Delete the comment and decrement count
             $this->comment->delete($commentId);
-            $this->post->decrementCommentCount($postId);
         }
         // Set error message in session if exists
         if ($error) {

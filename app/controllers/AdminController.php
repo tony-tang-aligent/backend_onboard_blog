@@ -8,14 +8,14 @@ use Exception;
 
 class AdminController {
 
-    private Post $postModel;
-    private Comment $commentModel;
-    private User $userModel;
+    private Post $post;
+    private Comment $comment;
+    private User $user;
 
     public function __construct() {
-        $this->postModel = new Post();
-        $this->commentModel = new Comment();
-        $this->userModel = new User();
+        $this->post = new Post();
+        $this->comment = new Comment();
+        $this->user = new User();
     }
 
     /** display the admin dashboard
@@ -23,9 +23,19 @@ class AdminController {
      */
     public function index(): void
     {
-        $posts = $this->postModel ->getPosts();
-        View::render('views/admin/dashboard.php', ['posts' => $posts]);
+        $posts = $this->post->getPosts();
+
+        // Initialize an empty array to hold comment counts
+        $commentCounts = [];
+
+        // Loop through posts to get comment counts
+        foreach ($posts as $post) {
+            $commentCounts[$post->id] = $this->comment->getCommentCount($post->id);
+        }
+
+        View::render('views/admin/dashboard.php', ['posts' => $posts, 'commentCounts' => $commentCounts]);
     }
+
 
     /** display a post for the admin user
      * @param $id
@@ -35,8 +45,8 @@ class AdminController {
     {
         $post = [];
         $comments = [];
-        $post = $this->postModel->getPostByID($id);
-        $comments = $this->commentModel->getApprovedComments($id);
+        $post = $this->post->getPostByID($id);
+        $comments = $this->comment->getApprovedComments($id);
         View::render('views/admin/admin_show.php', ['post' => $post, 'comments' => $comments]);
     }
 
@@ -45,7 +55,7 @@ class AdminController {
      */
     public function users(): void
     {
-        $users = $this->userModel->findAllUsers();
+        $users = $this->user->findAllUsers();
         View::render('views/admin/usermanagement.php', ['users' => $users]);
     }
 
@@ -59,17 +69,17 @@ class AdminController {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            if ($this->userModel->findUserByUsername($username)) {
+            if ($this->user->findUserByUsername($username)) {
                 $_SESSION['flash_message'] = "Username is already taken.";
                 return;
             }
 
-            if ($this->userModel->findUserByEmail($email)) {
+            if ($this->user->findUserByEmail($email)) {
                 $_SESSION['flash_message'] = "Email is already registered.";
                 return;
             }
 
-            $this->userModel->create($username, $email, $password);
+            $this->user->create($username, $email, $password);
             $_SESSION['flash_message'] = "User created successfully.";
             header("Location: /admin/users");
         } else {
@@ -84,7 +94,7 @@ class AdminController {
      */
     public function edit($id): void
     {
-        $user = $this->userModel->findUserByID($id);
+        $user = $this->user->findUserByID($id);
         View::render('views/admin/admin_user_edit.php', ['user' => $user]);
     }
 
@@ -94,7 +104,7 @@ class AdminController {
      */
     public function update($id): void
     {
-        $user = $this->userModel->findUserByID($id);
+        $user = $this->user->findUserByID($id);
         $username = $_POST['username'];
         $email = $_POST['email'];
         $role = $_POST['role'];
@@ -107,7 +117,7 @@ class AdminController {
             $hashedPassword = $user->password;
         }
         // Update the user's data
-        $this->userModel->update($id, $username, $email, $hashedPassword, $role);
+        $this->user->update($id, $username, $email, $hashedPassword, $role);
         // Redirect back to the user management page
         header("Location: /admin/users");
     }
@@ -118,7 +128,7 @@ class AdminController {
      */
     public function delete($id): void
     {
-        $this->userModel->delete($id);
+        $this->user->delete($id);
         header("Location: /admin/users");
     }
 
@@ -127,7 +137,7 @@ class AdminController {
      */
     public function showComment(): void
     {
-        $comments = $this->commentModel->getAllPendingComments();
+        $comments = $this->comment->getAllPendingComments();
         View::render('views/admin/approve_comments.php',['comments'=>$comments]);
     }
 
@@ -139,7 +149,7 @@ class AdminController {
     public function changeCommentStatus($commentId, $status): void
     {
         if ($status === 'approved' || $status === 'rejected') {
-            $this->commentModel->updateCommentStatus($commentId, $status);
+            $this->comment->updateCommentStatus($commentId, $status);
         }
         header("Location: /admin/comments");
     }

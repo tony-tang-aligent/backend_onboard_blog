@@ -124,29 +124,6 @@ class Post implements EntityInterface {
         return $this->db->single();
     }
 
-    /** Model Increasing the comment count
-     * @param $postId
-     * @return void
-     */
-    public function incrementCommentCount($postId) {
-        $this->db->query("UPDATE Posts Set comment_count = comment_count + 1 WHERE id= :id");
-        $this->db->bind(':id', $postId);
-        $this->db->execute();
-    }
-
-    /** Model Decreasing the comment count
-     * @param $postId
-     * @return null
-     */
-    public function decrementCommentCount($postId) {
-        $sql = "UPDATE Posts SET comment_count = comment_count - 1 WHERE id = :id";
-        $this->db->query($sql);
-        $this->db->bind(':id', $postId);
-        return $this->db->execute();
-    }
-
-
-
 
 }
 

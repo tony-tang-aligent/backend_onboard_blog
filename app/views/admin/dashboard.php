@@ -32,7 +32,7 @@
                                 <small class="text-muted">Created: <?= htmlspecialchars($post->created_at); ?></small>
                             </p>
                             <a href="/admin/posts/<?= $post->id; ?>" class="btn btn-primary">Read More</a>
-                            <span class="badge bg-secondary float-end"><?= htmlspecialchars($post->comment_count); ?> Comments</span>
+                            <span class="badge bg-secondary float-end"><?= htmlspecialchars($commentCounts[$post->id]); ?> Comments</span>
 
                             <!-- Admin can edit and delete all posts -->
                             <a href="/posts/<?= $post->id; ?>/edit" class="btn btn-warning mt-2">Edit</a>

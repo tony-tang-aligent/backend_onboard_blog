@@ -1,14 +1,16 @@
 <?php
 namespace app\controllers;
 use app\core\Controller;
+use app\models\Comment;
 use app\models\Post;
 use app\utils\View;
 
 class HomeController extends Controller {
-    private Post $postModel;
-
+    private Post $post;
+    private Comment $comment;
     public function __construct() {
-        $this->postModel = new Post();
+        $this->post = new Post();
+        $this->comment = new Comment();
     }
 
     /** Base Controller to redirect user based on the role
@@ -16,12 +18,19 @@ class HomeController extends Controller {
      */
     public function index(): void
     {
-        $posts = $this->postModel ->getPosts();
+        $posts = $this->post ->getPosts();
+        $commentCounts = [];
+
+        // Loop through posts to get comment counts
+        foreach ($posts as $post) {
+            $commentCounts[$post->id] = $this->comment->getCommentCount($post->id);
+        }
+
         // Check if the user is logged in and has a role
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-            View::render('views/admin/dashboard.php', ['posts' => $posts]);
+            View::render('views/admin/dashboard.php', ['posts' => $posts, 'commentCounts' => $commentCounts]);
         } else {
-            View::render('views/home.php', ['posts' => $posts]);
+            View::render('views/home.php', ['posts' => $posts, 'commentCounts' => $commentCounts]);
         }
     }
 }
