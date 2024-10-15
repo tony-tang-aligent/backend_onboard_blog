@@ -56,18 +56,6 @@ $router->add('GET', '/comments/{id}', [new CommentsController(), 'show']);
 $router->add('POST', '/comments/{commentId}/delete/{postId}', [new CommentsController(), 'delete']);
 $router->add('GET', '/comments/{commentId}/edit/{postId}', [new CommentsController(), 'edit']);
 
-//Admin routing
-//$router->add('GET', '/admin',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'index'];});
-//$router->add('GET', '/admin/posts/{id}',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'show'];});
-//$router->add('GET', '/admin/users',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'users'];});
-//$router->add('POST','/admin/users/create',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'create'];});
-//$router->add('GET', '/admin/users/{id}/edit',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'edit'];});
-//$router->add('POST', '/admin/users/{id}/update',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'update'];});
-//$router->add('POST', '/admin/users/{id}/delete',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'delete'];});
-//$router->add('GET', '/admin/comments',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'showComment'];});
-//$router->add('GET', '/admin/comments/{id}/approve',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'approve'];});
-//$router->add('GET', '/admin/comments/{id}/reject',function (){AuthMiddleware::checkAdminPermissions(); return [new AdminController(), 'reject'];});
-
 // Admin routing
 $router->add('GET', '/admin', function () {
     return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->index());
@@ -100,14 +88,6 @@ $router->add('GET', '/admin/comments/{id}/approve', function ($id) {
 $router->add('GET', '/admin/comments/{id}/reject', function ($id) {
     return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->changeCommentStatus($id, 'reject'));
 });
-/*
-///admin/comments/<?= $comment->id; ?>/edit/<?= $post->id;
-$router->add('POST', '/admin/users/{id}/update', function ($id) {
-    return AuthMiddleware::checkAdminPermissions(fn() => (new AdminController())->update($id));
-});
-*/
-
-
 
 // Only allow post creation if user is logged in
 $router->add('POST', '/posts/create', function() {
