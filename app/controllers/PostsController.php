@@ -3,6 +3,7 @@ namespace app\controllers;
 use app\models\Comment;
 use app\models\Post;
 use app\utils\View;
+
 class PostsController {
     private Post $post;
     private Comment $comment;
