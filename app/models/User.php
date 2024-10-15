@@ -1,8 +1,16 @@
 <?php
 namespace app\models;
 
-class User extends Entity
+use app\core\Database;
+use app\interfaces\EntityInterface;
+
+class User implements EntityInterface
 {
+    protected Database $db;
+
+    public function __construct() {
+        $this->db = new Database();
+    }
     /** Model Create a new user and insert into the database
      * @param array $data
      * @return void

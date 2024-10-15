@@ -1,9 +1,16 @@
 <?php
 namespace app\models;
+use app\core\Database;
+use app\interfaces\EntityInterface;
 use InvalidArgumentException;
 
-class Comment extends Entity {
+class Comment implements EntityInterface
+{
+    protected Database $db;
 
+    public function __construct() {
+        $this->db = new Database();
+    }
     /** API Create a new Post
      * @param array $data
      * @return void

@@ -1,6 +1,14 @@
 <?php
 namespace app\models;
-class Post extends Entity {
+use app\core\Database;
+use app\interfaces\EntityInterface;
+
+class Post implements EntityInterface {
+    protected Database $db;
+
+    public function __construct() {
+        $this->db = new Database();
+    }
 
     /** Model Add a post
      * @param $title
