@@ -1,6 +1,5 @@
 <?php
 namespace app\controllers;
-//require_once 'models/User.php';
 use app\models\User;
 use app\utils\View;
 

@@ -14,6 +14,6 @@ RUN apt-get update && apt-get install -y \
 
 # Install PDO and PDO MySQL extensions
 
-
+COPY ./xdebug.ini "${PHP_INI_DIR}/conf.d"
 # Copy the application code into the container
 COPY ./app /var/www/html

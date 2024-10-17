@@ -9,7 +9,6 @@ class CommentsController {
 
     public function __construct(
         private Comment $comment,
-        private Post $post
     ) {}
 
     /** API crete and store new comment
