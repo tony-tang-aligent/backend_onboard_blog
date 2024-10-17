@@ -3,33 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Blog Posts</title>
-<!--    <link href="../../public/css/popper.min.css" rel="stylesheet">-->
-<!--    <script src="../../public/js/popper.min.js"></script>-->
+    <title>Admin Dashboard - Manage Posts</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
     <div class="d-flex justify-content-between">
-        <h1>Latest Blog Posts</h1>
-        <!-- Display the Logout button if the user is logged in -->
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <span class="me-3">Logged in as: <strong><?= htmlspecialchars($_SESSION['username']); ?></strong> (<?= htmlspecialchars($_SESSION['role']); ?>)</span>
-            <a href="/logout" class="btn btn-danger me-2">Logout</a>
-        <?php else: ?>
-            <!-- If no user is logged in, you can display login/signup buttons (optional) -->
-            <a href="/showlogin" class="btn btn-secondary me-2">Login</a>
-            <a href="/showsignup" class="btn btn-primary me-2">Signup</a>
-        <?php endif; ?>
+        <h1>Manage Blog Posts</h1>
+        <!-- Display the admin's details and a logout button -->
+        <span class="me-3">Logged in as: <strong><?= htmlspecialchars($_SESSION['username']); ?></strong> (<?= htmlspecialchars($_SESSION['role']); ?>)</span>
+        <a href="/logout" class="btn btn-danger me-2">Logout</a>
+        <a href="/admin/users" class="btn btn-danger me-2">User Management</a>
+        <a href="/admin/comments" class="btn btn-danger me-2">Comments Management</a>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPostModal">Create Post</button>
 
-        <!-- Add Post button (only visible if logged in) -->
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPostModal">Create Post</button>
-        <?php endif; ?>
     </div>
 
     <div class="row mt-4">
-        <!-- Loop through the posts array -->
+        <!-- Loop through all the posts -->
         <?php if (!empty($posts)): ?>
             <?php foreach ($posts as $post): ?>
                 <div class="col-md-4">
@@ -40,16 +31,14 @@
                             <p class="card-text">
                                 <small class="text-muted">Created: <?= htmlspecialchars($post->created_at); ?></small>
                             </p>
-                            <a href="/posts/<?= $post->id; ?>" class="btn btn-primary">Read More</a>
-                            <span class="badge bg-secondary float-end"><?= htmlspecialchars($post->comment_count); ?> Comments</span>
+                            <a href="/admin/posts/<?= $post->id; ?>" class="btn btn-primary">Read More</a>
+                            <span class="badge bg-secondary float-end"><?= htmlspecialchars($commentCounts[$post->id]); ?> Comments</span>
 
-                            <!-- Display Edit and Delete buttons only if the logged-in user owns the post -->
-                            <?php if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] === $post->user_id)): ?>
-                                <a href="/posts/<?= $post->id; ?>/edit" class="btn btn-warning mt-2">Edit</a>
-                                <form action="/posts/<?= $post->id; ?>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                                    <button type="submit" class="btn btn-danger mt-2">Delete</button>
-                                </form>
-                            <?php endif; ?>
+                            <!-- Admin can edit and delete all posts -->
+                            <a href="/posts/<?= $post->id; ?>/edit" class="btn btn-warning mt-2">Edit</a>
+                            <form action="/posts/<?= $post->id; ?>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                <button type="submit" class="btn btn-danger mt-2">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -87,10 +76,8 @@
     </div>
 </div>
 
-
-<!-- Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
 </body>
