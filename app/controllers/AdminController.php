@@ -52,7 +52,7 @@ class AdminController {
      */
     public function users(): void
     {
-        $users = $this->user->findAll();
+        $users = $this->user->getAll();
         View::render('views/admin/usermanagement.php', ['users' => $users]);
     }
 
@@ -66,12 +66,12 @@ class AdminController {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            if ($this->user->findUserByUsername($username)) {
+            if ($this->user->getUserByUsername($username)) {
                 $_SESSION['flash_message'] = "Username is already taken.";
                 return;
             }
 
-            if ($this->user->findUserByEmail($email)) {
+            if ($this->user->getUserByEmail($email)) {
                 $_SESSION['flash_message'] = "Email is already registered.";
                 return;
             }
@@ -91,7 +91,7 @@ class AdminController {
      */
     public function edit($id): void
     {
-        $user = $this->user->findByID($id);
+        $user = $this->user->getByID($id);
         View::render('views/admin/admin_user_edit.php', ['user' => $user]);
     }
 
@@ -101,7 +101,7 @@ class AdminController {
      */
     public function update($id): void
     {
-        $user = $this->user->findByID($id);
+        $user = $this->user->getByID($id);
         $username = $_POST['username'];
         $email = $_POST['email'];
         $role = $_POST['role'];

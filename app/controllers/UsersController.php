@@ -36,12 +36,12 @@ class UsersController {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            if ($this->user->findUserByUsername($username)) {
+            if ($this->user->getUserByUsername($username)) {
                 $_SESSION['flash_message'] = "Username is already taken.";
                 return;
             }
 
-            if ($this->user->findUserByEmail($email)) {
+            if ($this->user->getUserByEmail($email)) {
                 $_SESSION['flash_message'] = "Email is already registered.";
                 return;
             }
@@ -63,7 +63,7 @@ class UsersController {
             $password = $_POST['password'];
 
             // Find the user by username
-            $user = $this->user->findUserByUsername($username);
+            $user = $this->user->getUserByUsername($username);
 
             if ($user && password_verify($password, $user->password)) {
                 $_SESSION['user_id'] = $user->id;

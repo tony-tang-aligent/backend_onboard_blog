@@ -26,7 +26,7 @@ class User implements EntityInterface
      * @param $username
      * @return mixed
      */
-    public function findUserByUsername($username)
+    public function getUserByUsername($username)
     {
         $this->db->query("SELECT * FROM Users WHERE username = :username");
         $this->db->bind(':username', $username);
@@ -37,7 +37,7 @@ class User implements EntityInterface
      * @param $email
      * @return mixed
      */
-    public function findUserByEmail($email)
+    public function getUserByEmail($email)
     {
         $this->db->query("SELECT * FROM Users WHERE email = :email");
         $this->db->bind(':email', $email);
@@ -47,7 +47,7 @@ class User implements EntityInterface
     /** Model Find all users
      * @return mixed
      */
-    public function findAll(): mixed
+    public function getAll(): mixed
     {
         $this->db->query("SELECT * FROM Users");
         return $this->db->resultSet();
@@ -75,7 +75,7 @@ class User implements EntityInterface
      * @param $id
      * @return mixed
      */
-    public function findByID($id): mixed
+    public function getByID($id): mixed
     {
         $query = "SELECT * FROM Users WHERE id = :id";
         $this->db->query($query);
