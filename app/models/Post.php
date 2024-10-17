@@ -5,11 +5,8 @@ use app\interfaces\EntityInterface;
 use app\utils\DbUtils;
 
 class Post implements EntityInterface {
-    protected Database $db;
 
-    public function __construct() {
-        $this->db = new Database();
-    }
+    public function __construct(protected Database $db) {}
 
 
     /** Model Create a new post

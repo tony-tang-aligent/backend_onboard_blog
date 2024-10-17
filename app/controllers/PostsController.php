@@ -5,12 +5,10 @@ use app\models\Post;
 use app\utils\View;
 
 class PostsController {
-    private Post $post;
-    private Comment $comment;
-    public function __construct() {
-        $this->post = new Post(); // Initialize the Post instance
-        $this->comment = new Comment();
-    }
+    public function __construct(
+        private Post $post,
+        private Comment $comment
+    ) {}
 
     /** API show all the posts
      * @return void

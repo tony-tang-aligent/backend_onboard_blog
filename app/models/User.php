@@ -6,11 +6,7 @@ use app\interfaces\EntityInterface;
 
 class User implements EntityInterface
 {
-    protected Database $db;
-
-    public function __construct() {
-        $this->db = new Database();
-    }
+    public function __construct(protected Database $db) {}
     /** Model Create a new user and insert into the database
      * @param array $data
      * @return void

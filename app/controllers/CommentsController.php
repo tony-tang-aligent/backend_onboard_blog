@@ -6,13 +6,11 @@ use app\models\Post;
 use app\utils\View;
 
 class CommentsController {
-    private Comment $comment;
-    private Post $post;
 
-    public function __construct() {
-        $this->comment = new Comment(); // Initialize the Post instance
-        $this->post = new Post();
-    }
+    public function __construct(
+        private Comment $comment,
+        private Post $post
+    ) {}
 
     /** API crete and store new comment
      * @param $postId

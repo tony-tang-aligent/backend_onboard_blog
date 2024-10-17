@@ -8,14 +8,11 @@ use Exception;
 
 class AdminController {
 
-    private Post $post;
-    private Comment $comment;
-    private User $user;
-
-    public function __construct() {
-        $this->post = new Post();
-        $this->comment = new Comment();
-        $this->user = new User();
+    public function __construct(
+        private Post $post,
+        private Comment $comment,
+        private User $user
+    ) {
     }
 
     /** display the admin dashboard

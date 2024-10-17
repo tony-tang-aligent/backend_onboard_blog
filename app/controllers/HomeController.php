@@ -6,12 +6,10 @@ use app\models\Post;
 use app\utils\View;
 
 class HomeController extends Controller {
-    private Post $post;
-    private Comment $comment;
-    public function __construct() {
-        $this->post = new Post();
-        $this->comment = new Comment();
-    }
+    public function __construct(
+        private Post $post,
+        private Comment $comment
+    ) {}
 
     /** Base Controller to redirect user based on the role
      * @return void

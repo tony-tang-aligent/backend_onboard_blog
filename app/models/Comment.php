@@ -6,11 +6,7 @@ use InvalidArgumentException;
 
 class Comment implements EntityInterface
 {
-    protected Database $db;
-
-    public function __construct() {
-        $this->db = new Database();
-    }
+    public function __construct(protected Database $db) {}
     /** API Create a new Post
      * @param array $data
      * @return void
@@ -132,5 +128,12 @@ class Comment implements EntityInterface
     }
 
 
-
+    /** Model Get all the existing comments
+     * @return mixed
+     */
+    public function getAll(): mixed
+    {
+        $this->db->query("SELECT * FROM Comments");
+        return $this->db->resultSet();
+    }
 }
