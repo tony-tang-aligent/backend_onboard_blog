@@ -23,7 +23,7 @@ class AdminController {
      */
     public function index(): void
     {
-        $posts = $this->post->getPosts();
+        $posts = $this->post->getAll();
 
         // Initialize an empty array to hold comment counts
         $commentCounts = [];
@@ -45,7 +45,7 @@ class AdminController {
     {
         $post = [];
         $comments = [];
-        $post = $this->post->getPostByID($id);
+        $post = $this->post->getByID($id);
         $comments = $this->comment->getApprovedComments($id);
         View::render('views/admin/admin_show.php', ['post' => $post, 'comments' => $comments]);
     }
@@ -55,7 +55,7 @@ class AdminController {
      */
     public function users(): void
     {
-        $users = $this->user->findAllUsers();
+        $users = $this->user->findAll();
         View::render('views/admin/usermanagement.php', ['users' => $users]);
     }
 
@@ -94,7 +94,7 @@ class AdminController {
      */
     public function edit($id): void
     {
-        $user = $this->user->findUserByID($id);
+        $user = $this->user->findByID($id);
         View::render('views/admin/admin_user_edit.php', ['user' => $user]);
     }
 
@@ -104,7 +104,7 @@ class AdminController {
      */
     public function update($id): void
     {
-        $user = $this->user->findUserByID($id);
+        $user = $this->user->findByID($id);
         $username = $_POST['username'];
         $email = $_POST['email'];
         $role = $_POST['role'];

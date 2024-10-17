@@ -109,7 +109,8 @@ class Post implements EntityInterface {
      * @return mixed
      */
     // Retrieve all blog posts from the database
-    public function getPosts() {
+    public function getAll(): mixed
+    {
         $this->db->query("SELECT * FROM Posts ORDER BY created_at DESC");
         return $this->db->resultSet();
     }
@@ -118,12 +119,11 @@ class Post implements EntityInterface {
      * @param $id
      * @return mixed
      */
-    public function getPostByID($id) {
+    public function getByID($id): mixed
+    {
         $this->db->query("SELECT * FROM Posts WHERE id = :id");
         $this->db->bind(':id', $id);
         return $this->db->single();
     }
-
-
 }
 

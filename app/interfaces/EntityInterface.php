@@ -1,6 +1,8 @@
 <?php
 namespace app\interfaces;
 
+use PDO;
+
 interface EntityInterface {
     /**
      * Create a new record in the database.
@@ -23,4 +25,15 @@ interface EntityInterface {
      * @return void
      */
     public function delete(int $id): void;
+
+    /** Retrieve a record by its id
+     * @param int $id
+     * @return mixed
+     */
+    public function getByID(int $id): mixed;
+
+    /** Retrieve all the records of an item
+     * @return mixed
+     */
+    public function getAll(): mixed;
 }

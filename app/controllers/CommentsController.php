@@ -58,7 +58,7 @@ class CommentsController {
      */
     public function delete($commentId, $postId): void
     {
-        $comment = $this->comment->getCommentByID($commentId);
+        $comment = $this->comment->getByID($commentId);
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
 
@@ -88,7 +88,7 @@ class CommentsController {
      */
     public function edit($commentId, $postId): void
     {
-        $comment = $this->comment->getCommentByID($commentId);
+        $comment = $this->comment->getByID($commentId);
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? "/admin/posts/$postId" : "/posts/$postId";
 

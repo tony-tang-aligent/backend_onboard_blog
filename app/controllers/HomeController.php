@@ -18,7 +18,7 @@ class HomeController extends Controller {
      */
     public function index(): void
     {
-        $posts = $this->post ->getPosts();
+        $posts = $this->post ->getAll();
         $commentCounts = [];
 
         // Loop through posts to get comment counts

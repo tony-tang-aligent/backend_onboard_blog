@@ -17,7 +17,7 @@ class PostsController {
      */
     public function index(): void
     {
-        $posts = $this->post->getPosts();
+        $posts = $this->post->getAll();
         View::render('views/home.php',['posts'=>$posts]);
     }
 
@@ -52,7 +52,7 @@ class PostsController {
     {
         $post = [];
         $comments = [];
-        $post = $this->post->getPostByID($id);
+        $post = $this->post->getByID($id);
         $comments = $this->comment->getApprovedComments($id);
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             View::render('views/admin/posts/admin_show.php',['post'=>$post, 'comments'=>$comments]);
@@ -65,7 +65,7 @@ class PostsController {
      * @return void
      */
     public function edit($id): void {
-        $post = $this->post->getPostByID($id);
+        $post = $this->post->getByID($id);
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? '/admin' : '/';
 
@@ -104,7 +104,7 @@ class PostsController {
      * @return void
      */
     public function delete($id): void {
-        $post = $this->post->getPostByID($id);
+        $post = $this->post->getByID($id);
         $role = $_SESSION['role'];
         $redirectUrl = ($role === 'admin') ? '/admin' : '/';
 

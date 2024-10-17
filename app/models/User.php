@@ -51,7 +51,8 @@ class User implements EntityInterface
     /** Model Find all users
      * @return mixed
      */
-    public function findAllUsers() {
+    public function findAll(): mixed
+    {
         $this->db->query("SELECT * FROM Users");
         return $this->db->resultSet();
     }
@@ -78,7 +79,7 @@ class User implements EntityInterface
      * @param $id
      * @return mixed
      */
-    public function findUserByID($id)
+    public function findByID($id): mixed
     {
         $query = "SELECT * FROM Users WHERE id = :id";
         $this->db->query($query);

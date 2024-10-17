@@ -59,7 +59,7 @@ class Comment implements EntityInterface
      * @param $id
      * @return mixed
      */
-    public function getCommentByID($id)
+    public function getByID($id): mixed
     {
         $this->db->query("SELECT * FROM Comments WHERE id = :id");
         $this->db->bind(':id', $id);
